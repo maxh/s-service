@@ -11,7 +11,7 @@
     "fix-lint": "tslint -c ./tslint.json --fix './src/**/*.ts'",
     "compile": "tsc",
     "server": "node build/index.js",
-    "server-live": "nodemon --inspect build/index.js --watch build"
+    "server-live": "nodemon --inspect --debug-brk build/index.js --watch build"
   },
   "author": "",
   "license": "ISC",

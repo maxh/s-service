@@ -79,20 +79,23 @@ const ensureGooglePermissionsSaved = function(
     user: IUserModel,
     tokenInfo: ITokenInfo,
     scopes: string[]) {
+  debugger;
   const query = {userId: user.id, provider: Provider.GOOGLE};
   return Permission.findOne(query).then(foundPermission => {
     if (foundPermission) {
       return foundPermission.updateGoogleTokensIfScopesChanged(
           tokenInfo, scopes);
     } else {
-      const newPermission = new Permission({
+      const permissionParams = {
         userId: user.id,
         accessToken: tokenInfo.accessToken,
         accessTokenExpiration: tokenInfo.accessTokenExpiration,
         refreshToken: tokenInfo.refreshToken,
         idForProvider: user.googleId,
         scopes: scopes,
-      } as IPermission);
+        provider: Provider.GOOGLE
+      };
+      const newPermission = new Permission(permissionParams);
       return newPermission.save();
     }
   });
