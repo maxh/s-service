@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-
+import * as mongooseTimestamp from 'mongoose-timestamp';
 
 export interface IUser {
   googleId: string;
@@ -14,6 +14,7 @@ const _schema = new mongoose.Schema({
   name: {type: String, required: true},
   gender: String,
 });
+_schema.plugin(mongooseTimestamp);
 
 const _model = mongoose.model('User', _schema);
 

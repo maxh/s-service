@@ -3,61 +3,57 @@ import * as express from 'express';
 import * as googleAuth from '../infra/google-auth';
 import settings from '../settings/index';
 
-import Permission, {
-  IPermission,
-  ITokenInfo,
-  Provider,
-} from '../models/Permission';
-import User, { IUser } from '../models/User';
-
-
-//////////
-// Routes.
-//////////
+import DeviceToken from '../models/DeviceToken';
+import Permission from '../models/Permission';
+import User from '../models/User';
 
 
 const router = express.Router();
 
-router.post('/fromServerAuthCode', function(
+router.post('/devicetoken', function(
     req: express.Request,
     res: express.Response) {
-  const body = req.body;
-  if (!body) {
+  debugger;
+
+  if (!req.body) {
     res.status(400).send('Authorization details required.');
   }
-
-  // TODO(max): Determine scopes on the iOS side first.
-  const scopes = [
-    'https://www.googleapis.com/auth/userinfo.profile',
-    'https://www.googleapis.com/auth/userinfo.email',
-  ];
+  const {googleUser, scopes, deviceName} = req.body;
 
   const tokenInfoPromise = googleAuth.getTokenInfoFromServerAuthCode(
-      scopes, body.serverAuthCode);
-  const userPromise = googleAuth.getGoogleId(body.idToken).then(googleId => {
-    return User.findOrCreate({
-      googleId: googleId,
-      name: body.name,
-      gender: body.gender,
-      email: body.email,
-    });
-  });
+      scopes, googleUser.serverAuthCode);
+  const userPromise = googleAuth.getGoogleId(googleUser.idToken)
+      .then(googleId => {
+        return User.findOrCreate({
+          googleId: googleId,
+          name: googleUser.name,
+          gender: googleUser.gender,
+          email: googleUser.email,
+        });
+      });
 
-  return Promise.all([userPromise, tokenInfoPromise]).then(values => {
+  const promises = Promise.all([userPromise, tokenInfoPromise]);
+  const permissionPromise = promises.then(values => {
     const user = values[0];
     const tokenInfo = values[1];
     return Permission.ensureGooglePermissionsSaved(user, tokenInfo, scopes);
-  }).then(() => {
-    // TODO(max): Generate auth token.
-    res.status(400);
-  }).catch((error) => {
-    res.status(500).send(error);
   });
+
+
+  const deviceTokenPromise = userPromise.then(user => {
+    return DeviceToken.create(user.id, deviceName);
+  });
+
+
+  const finalPromises = Promise.all([deviceTokenPromise, permissionPromise]);
+  return finalPromises
+      .then(values => {
+        const deviceToken = values[0];
+        res.status(200).send({deviceToken: deviceToken.token});
+      })
+      .catch((error) => {
+        res.status(500).send(error);
+      });
 });
 
 export default router;
-
-
-//////////////////
-// Implementation.
-//////////////////

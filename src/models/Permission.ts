@@ -1,4 +1,6 @@
 import * as mongoose from 'mongoose';
+import * as mongooseTimestamp from 'mongoose-timestamp';
+
 import User from './User';
 
 /** @enum */
@@ -33,6 +35,7 @@ const _schema = new mongoose.Schema({
   scopes: [String],
   provider: String,
 });
+_schema.plugin(mongooseTimestamp);
 
 const _model =  mongoose.model('Permission', _schema);
 
@@ -42,7 +45,6 @@ class Permission {
       user: User,
       tokenInfo: ITokenInfo,
       scopes: string[]) {
-    debugger;
     const query = {userId: user.id, provider: Provider.GOOGLE};
     return _model.findOne(query).then(existingDoc => {
       if (existingDoc) {
@@ -75,7 +77,7 @@ class Permission {
   public updateGoogleTokensIfScopesChanged = function(
       newTokenInfo: ITokenInfo,
       newScopes: string[]) {
-    const currentScopes = this.scopes;
+    const currentScopes = this._document.scopes;
     if (currentScopes.length > newScopes.length) {
       // The permission in the db has more scopes than we're currently
       // granting -- this means that we're probably doing a login, but
@@ -84,18 +86,18 @@ class Permission {
       return;
     } else {
       // Upgrading permissions -- write to db.
-      this.document_.accessToken = newTokenInfo.accessToken;
-      this.document_.accessTokenExpiration =
+      this._document.accessToken = newTokenInfo.accessToken;
+      this._document.accessTokenExpiration =
           newTokenInfo.accessTokenExpiration;
       // When the user logins in but already has been auth'd, Google won't
       // give us the refresh token back -- they assume we have it stored.
       // In this case, don't set metadata on a new refresh token, just
       // ignore it and keep the old one.
       if (newTokenInfo.refreshToken) {
-        this.document_.refreshToken = newTokenInfo.refreshToken;
+        this._document.refreshToken = newTokenInfo.refreshToken;
       }
-      this.document_.scopes = newScopes;
-      return this.document_.save();
+      this._document.scopes = newScopes;
+      return this._document.save();
     }
   };
 

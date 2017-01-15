@@ -21,9 +21,11 @@
     "isomorphic-fetch": "^2.2.1",
     "mongodb": "^2.2.21",
     "mongoose": "^4.7.6",
+    "mongoose-timestamp": "^0.6.0",
     "typescript": "^2.1.5"
   },
   "devDependencies": {
+    "@types/base64url": "^2.0.3",
     "@types/core-js": "^0.9.35",
     "@types/mongodb": "^2.1.37",
     "@types/mongoose": "^4.7.3",
