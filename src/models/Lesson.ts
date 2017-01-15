@@ -35,7 +35,7 @@ class Lesson {
 
   public static delete(userId: string, lessonId: string): Promise<undefined> {
     return _model.remove({userId, lessonId}).then(() => {
-      // Return nothing if the deletion succeeded.
+      // Resolve to nothing if the deletion succeeded.
       return undefined;
     });
   }
@@ -46,7 +46,7 @@ class Lesson {
     this._document = document;
   }
 
-  public getJson(): ILesson {
+  public serialize(): ILesson {
     return {
       question: this._document.question,
       fnName: this._document.fnName,

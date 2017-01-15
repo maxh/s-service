@@ -15,7 +15,6 @@
     "object-literal-sort-keys": false,
     "object-literal-shorthand": false,
     "arrow-parens": false,
-    "variable-name": false,
-    "no-unused-variable": true
+    "variable-name": false
   }
 }

@@ -42,7 +42,7 @@ const _model =  mongoose.model('Permission', _schema);
 
 
 class Permission {
-  public static ensureGooglePermissionsSaved = function(
+  public static ensureGooglePermissionSaved = function(
       user: User,
       tokenInfo: ITokenInfo,
       scopes: string[]) {

@@ -2,21 +2,29 @@
 
 import * as fetch from 'isomorphic-fetch';
 
-// A handler wrapper that allows handler to return promises
-// instead of dealing with req and res.
+// A handler wrapper that allows handlers to return promises
+// instead of dealing with req and res. Also, centralizes
+// reject and error handling.
 export const endpoint = (fn) => {
   const wrapper = (req, res) => {
-    fn(req, res)
-        .then(json => {
-          if (!req.headerSent) {
-            req.status(200).json(json);
-          }
-        })
-        .catch(error => {
-          if (!req.headerSent) {
-            res.status(500).send({error: String(error)});
-          }
-        });
+    const promise = new Promise((resolve, reject) => {
+      try {
+        resolve(fn(req, res));
+      } catch (e) {
+        reject(e);
+      }
+    });
+
+    promise.then(result => {
+      if (!res.headersSent) {
+        res.status(200).json(result);
+      }
+    }).catch(error => {
+      console.error('Error in handler: ', error);
+      if (!res.headersSent) {
+        res.status(500).send({error: 'Internal server error.'});
+      }
+    });
   };
   return wrapper;
 };

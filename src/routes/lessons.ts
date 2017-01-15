@@ -9,18 +9,22 @@ const router = express.Router();
 
 router.get('/', endpoint((req, res) => {
   return Lesson.getAll(req.userId).then(lessons => {
-    return lessons.map(lesson => lesson.getJson());
+    return {
+      lessons: lessons.map(lesson => lesson.serialize())
+    };
   });
 }));
 
 router.post('/', endpoint((req, res) => {
   const {question, fnName, params} = req.body;
-  const lessonParams = Object.assign(
-    {question, fnName, params},
-    {userId: req.userId},
-  );
+  const lessonParams = {
+    userId: req.userId,
+    question,
+    fnName,
+    params,
+  };
   return Lesson.create(lessonParams).then(lesson => {
-    return lesson.getJson();
+    return lesson.serialize();
   });
 }));
 

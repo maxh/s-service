@@ -34,15 +34,24 @@ const _generateToken = (byteCount) => {
 };
 
 class DeviceToken {
-  public static create(
+  public static createOrReplace(
       userId: string,
       deviceName: string): Promise<DeviceToken> {
-    // TODO(max): Only allow one DeviceToken per (user, deviceName) pair?
-    return _generateToken(BYTE_COUNT).then(token => {
+    const deleteExistingPromise = _model.findOne({userId, deviceName})
+      .then(existingDoc => {
+        if (existingDoc) {
+          return existingDoc.remove();
+        }
+      });
+
+    const tokenPromise = _generateToken(BYTE_COUNT);
+
+    return Promise.all([tokenPromise, deleteExistingPromise]).then(values => {
+      const token = values[0];
       return _model.create({
-        userId: userId,
-        deviceName: deviceName,
-        token: token,
+        userId,
+        deviceName,
+        token,
       } as IDeviceToken);
     }).then(doc => {
       return new DeviceToken(doc);

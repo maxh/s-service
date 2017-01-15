@@ -3,26 +3,55 @@
 import DeviceToken from '../models/DeviceToken';
 
 
+interface ITokenHeader {
+  appId: string;
+  tokenType: string;
+  tokenString: string;
+}
+
+
+/**
+ * Parses an authorization header value.
+ * @throws If unable to parse.
+ */
+const _parseTokenHeader = (header: string): Promise<ITokenHeader> => {
+  // Valid headers look like 'Scout DeviceToken foobar123'
+  // TODO(max): Add support for 'Scout JWT foobar123'
+  return new Promise((resolve, reject) => {
+    try {
+      const parts = header.split(' ');
+      const [appId, tokenType, tokenString] = parts;
+      resolve({
+        appId: appId.toLowerCase(),
+        tokenType: tokenType.toLowerCase(),
+        tokenString
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export const requireToken = (req, res, next) => {
-  const token = req.headers.Authorization;
-  if (!token) {
-    return res.status(403).send({error: 'No token provided.'});
-  }
+  const header = req.get('authorization');
+  const userIdPromise = _parseTokenHeader(header).then(parsed => {
+    const {appId, tokenType, tokenString} = parsed;
+    if (appId === 'scout' && tokenType === 'devicetoken') {
+      return DeviceToken.verify(tokenString);
+    } else {
+      throw Error();
+    }
+  });
 
-  // Valid tokens look like 'Scout DeviceToken foobar123'
-  const parts = token.split(' ');
-  const appId = parts[0];
-  const tokenType = parts[1];
-  const tokenString = parts[2];
-
-  if (appId === 'Scout' && tokenType === 'DeviceToken') {
-    DeviceToken.verify(tokenString).then(userId => {
-      req.userId = userId;
-      next();
-    });
-  } else {
-    return res.status(403).send({error: 'Invalid token.'});
-  }
+  userIdPromise
+      .then(userId => {
+        // Attach the userId to the request for use in handlers.
+        req.userId = userId;
+        next();
+      })
+      .catch(() => {
+        res.status(403).send({error: 'Invalid token.'});
+      });
 };
 
 export const forceHttpsUnlessDev = (req, res, next) => {
