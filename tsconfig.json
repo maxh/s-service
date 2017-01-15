@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "outDir": "build/intermediate",
+    "declaration": true,
+    "removeComments": true,
+    "moduleResolution": "node"
+  },
+  "files": [
+    "src/index.ts"
+  ]
+}
