@@ -1,5 +1,5 @@
-import bodyParser from 'body-parser';
-import express from 'express';
+import * as bodyParser from 'body-parser';
+import * as express from 'express';
 import * as mongoose from 'mongoose';
 
 import auth from './routes/auth';
@@ -49,8 +49,7 @@ const boot = () => {
   // by default.
   (mongoose as any).Promise = global.Promise;
 
-  const mongoUrl = settings.urls.mongo + settings.mongoDbName;
-  mongoose.connect(mongoUrl)
+  mongoose.connect(settings.urls.mongo)
       .then(startServers)
       .catch((error) => {
         console.error('Unable to connect to Mongo');

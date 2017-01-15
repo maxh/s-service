@@ -15,26 +15,29 @@ export interface ITokenInfo {
   refreshToken?: string;
 };
 
-export interface IPermission extends mongoose.Document {
-  id: string;  // Provided by Mongoose.
+export interface IPermission {
   userId: string;
-  token: string;
-  tokenExpiration: number;
+  accessToken: string;
+  accessTokenExpiration: number;
   refreshToken: string;
-  providerId: string;
+  idForProvider: string;
   scopes: string[];
   updateGoogleTokensIfScopesChanged(
       newTokenInfo: ITokenInfo, newScopes: string[]);
+}
+
+export interface IPermissionModel extends IPermission, mongoose.Document {
+  id: string;  // Provided by Mongoose.
 }
 
 const { Schema } = mongoose;
 
 const permissionSchema = new Schema({
   userId: String,
-  token: String,
-  tokenExpiration: Number,
+  accessToken: String,
+  accessTokenExpiration: Number,
   refreshToken: String,
-  providerId: String,
+  idForProvider: String,
   scopes: [String],
 });
 
@@ -59,11 +62,11 @@ permissionSchema.methods.updateGoogleTokensIfScopesChanged = function(
     if (newTokenInfo.refreshToken) {
       this.refreshToken = newTokenInfo.refreshToken;
     }
-    this.permissions = newScopes;
+    this.scopes = newScopes;
     return this.save();
   }
 };
 
-const Permission = mongoose.model<IPermission>('Permission', permissionSchema);
+const Permission = mongoose.model<IPermissionModel>('Permission', permissionSchema);
 
 export default Permission;

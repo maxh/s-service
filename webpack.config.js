@@ -21,18 +21,18 @@ module.exports = {
         loader: 'json-loader'
       },
       {
-        test: /\.js(x?)$/,
-        loader: 'babel-loader'
+        test: /\.js$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/
+      },
+      {
+        test: /(\.md$|^LICENSE$)/,
+        loader: 'ignore-loader'
       }
     ]
   },
-  externals: nodeModules,
   output: {
     path: path.join(__dirname, 'build/final'),
     filename: 'service.js'
-  },
-  node: {
-    console: true,
-    fs: true,
   }
 }

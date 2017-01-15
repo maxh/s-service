@@ -1,3 +1,6 @@
+import * as fetch from 'isomorphic-fetch';
+
+
 export const urlEncode = (data: Object) => {
   const parts = [];
   for (const p in data) {

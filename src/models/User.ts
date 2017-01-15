@@ -1,8 +1,7 @@
 import * as mongoose from 'mongoose';
 
 
-export interface IUser extends mongoose.Document {
-  id: string;
+export interface IUser {
   googleId: string;
   name: string;
   gender?: string;
@@ -16,6 +15,10 @@ const UserSchema = new mongoose.Schema({
   googleId: String,
 });
 
-const User = mongoose.model<IUser>('User', UserSchema);
+export interface IUserModel extends IUser, mongoose.Document {
+  id: string;  // Provided by Mongoose.
+}
+
+const User = mongoose.model<IUserModel>('User', UserSchema);
 
 export default User;
