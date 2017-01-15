@@ -3,6 +3,7 @@ import * as mongooseTimestamp from 'mongoose-timestamp';
 
 import User from './User';
 
+
 /** @enum */
 export const Provider = {
   GOOGLE: 'google',
@@ -60,7 +61,7 @@ class Permission {
           idForProvider: user.googleId,
           scopes: scopes,
           provider: Provider.GOOGLE,
-        };
+        } as IPermission;
         return _model.create(params).then(doc => {
           return new Permission(doc);
         });

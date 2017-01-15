@@ -1,7 +1,7 @@
 import * as express from 'express';
 
 import * as googleAuth from '../infra/google-auth';
-import settings from '../settings/index';
+import { endpoint } from '../infra/net';
 
 import DeviceToken from '../models/DeviceToken';
 import Permission from '../models/Permission';
@@ -10,9 +10,7 @@ import User from '../models/User';
 
 const router = express.Router();
 
-router.post('/devicetoken', function(
-    req: express.Request,
-    res: express.Response) {
+router.post('/devicetoken', endpoint((req, res) => {
   debugger;
 
   if (!req.body) {
@@ -46,14 +44,10 @@ router.post('/devicetoken', function(
 
 
   const finalPromises = Promise.all([deviceTokenPromise, permissionPromise]);
-  return finalPromises
-      .then(values => {
-        const deviceToken = values[0];
-        res.status(200).send({deviceToken: deviceToken.token});
-      })
-      .catch((error) => {
-        res.status(500).send(error);
-      });
-});
+  return finalPromises.then(values => {
+    const deviceToken = values[0];
+    return {deviceToken: deviceToken.token};
+  });
+}));
 
 export default router;

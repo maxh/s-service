@@ -7,7 +7,6 @@ import * as mongooseTimestamp from 'mongoose-timestamp';
 interface IDeviceToken {
   token: string;
   userId: string;
-  creationTimeEpochSec: number;
   deviceName: string;
 }
 
@@ -44,8 +43,23 @@ class DeviceToken {
         userId: userId,
         deviceName: deviceName,
         token: token,
-      });
+      } as IDeviceToken);
     }).then(doc => {
+      return new DeviceToken(doc);
+    });
+  }
+
+  public static verify(token: string): Promise<string> {
+    return DeviceToken.getByToken(token).then(deviceToken => {
+      return deviceToken.userId;
+    });
+  }
+
+  public static getByToken(token: string): Promise<DeviceToken> {
+    return _model.findOne({token: token}).then(doc => {
+      if (!doc) {
+        throw Error('Invalid token.');
+      }
       return new DeviceToken(doc);
     });
   }
@@ -58,6 +72,10 @@ class DeviceToken {
 
   get token(): string {
     return this._document.token;
+  }
+
+  get userId(): string {
+    return this._document.userId;
   }
 }
 

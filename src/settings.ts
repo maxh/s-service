@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 
-
 const settings: any = {};
 
 const KEY_PATH = './keys/scout-service-account-credentials.json';
