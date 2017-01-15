@@ -6,9 +6,9 @@ import settings from '../settings/index';
 import Permission, {
   IPermission,
   ITokenInfo,
-  Provider
+  Provider,
 } from '../models/Permission';
-import User, { IUser, IUserModel } from '../models/User';
+import User, { IUser } from '../models/User';
 
 
 //////////
@@ -35,7 +35,7 @@ router.post('/fromServerAuthCode', function(
   const tokenInfoPromise = googleAuth.getTokenInfoFromServerAuthCode(
       scopes, body.serverAuthCode);
   const userPromise = googleAuth.getGoogleId(body.idToken).then(googleId => {
-    return getOrCreateUser({
+    return User.findOrCreate({
       googleId: googleId,
       name: body.name,
       gender: body.gender,
@@ -46,7 +46,7 @@ router.post('/fromServerAuthCode', function(
   return Promise.all([userPromise, tokenInfoPromise]).then(values => {
     const user = values[0];
     const tokenInfo = values[1];
-    return ensureGooglePermissionsSaved(user, tokenInfo, scopes);
+    return Permission.ensureGooglePermissionsSaved(user, tokenInfo, scopes);
   }).then(() => {
     // TODO(max): Generate auth token.
     res.status(400);
@@ -61,42 +61,3 @@ export default router;
 //////////////////
 // Implementation.
 //////////////////
-
-
-const getOrCreateUser = function(userParams: IUser): Promise<IUserModel> {
-  const query = {googleId: userParams.googleId};
-  return User.findOne(query).then(foundUser => {
-    if (foundUser) {
-      return foundUser;
-    } else {
-      const newUser = new User(userParams);
-      return newUser.save().then(() => newUser);
-    }
-  });
-};
-
-const ensureGooglePermissionsSaved = function(
-    user: IUserModel,
-    tokenInfo: ITokenInfo,
-    scopes: string[]) {
-  debugger;
-  const query = {userId: user.id, provider: Provider.GOOGLE};
-  return Permission.findOne(query).then(foundPermission => {
-    if (foundPermission) {
-      return foundPermission.updateGoogleTokensIfScopesChanged(
-          tokenInfo, scopes);
-    } else {
-      const permissionParams = {
-        userId: user.id,
-        accessToken: tokenInfo.accessToken,
-        accessTokenExpiration: tokenInfo.accessTokenExpiration,
-        refreshToken: tokenInfo.refreshToken,
-        idForProvider: user.googleId,
-        scopes: scopes,
-        provider: Provider.GOOGLE
-      };
-      const newPermission = new Permission(permissionParams);
-      return newPermission.save();
-    }
-  });
-};
