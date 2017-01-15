@@ -1,6 +1,3 @@
-// See: https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/mongoose
-// http://brianflove.com/2016/10/04/typescript-declaring-mongoose-schema-model/
-
 import * as mongoose from 'mongoose';
 
 
@@ -9,6 +6,7 @@ export const Provider = {
   DROPBOX: 'dropbox',
 };
 
+// accessTokenExpiration is in seconds since UNIX epoch.
 export interface ITokenInfo {
   accessToken: string;
   accessTokenExpiration: number;
