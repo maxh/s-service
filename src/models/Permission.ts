@@ -1,8 +1,6 @@
 import * as mongoose from 'mongoose';
 import * as mongooseTimestamp from 'mongoose-timestamp';
 
-import User from './User';
-
 
 /** @enum */
 export const Provider = {
@@ -42,11 +40,12 @@ const _model =  mongoose.model('Permission', _schema);
 
 
 class Permission {
-  public static ensureGooglePermissionSaved = function(
-      user: User,
+  public static ensureGooglePermissionUpToDate = function(
+      userId: string,
+      googleId: string,
       tokenInfo: ITokenInfo,
-      scopes: string[]) {
-    const query = {userId: user.id, provider: Provider.GOOGLE};
+      scopes: string[]): Promise<Permission> {
+    const query = {userId: userId, provider: Provider.GOOGLE};
     return _model.findOne(query).then(existingDoc => {
       if (existingDoc) {
         const existing = new Permission(existingDoc);
@@ -54,17 +53,29 @@ class Permission {
                     .then(() => existing));
       } else {
         const params = {
-          userId: user.id,
+          userId: userId,
           accessToken: tokenInfo.accessToken,
           accessTokenExpiration: tokenInfo.accessTokenExpiration,
           refreshToken: tokenInfo.refreshToken,
-          idForProvider: user.googleId,
+          idForProvider: googleId,
           scopes: scopes,
           provider: Provider.GOOGLE,
         } as IPermission;
         return _model.create(params).then(doc => {
           return new Permission(doc);
         });
+      }
+    });
+  };
+
+  public static find = function(
+      userId: string,
+      provider: string): Promise<Permission> {
+    return _model.findOne({userId, provider}).then(existingDoc => {
+      if (existingDoc) {
+        return new Permission(existingDoc);
+      } else {
+        return null;
       }
     });
   };
