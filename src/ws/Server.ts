@@ -1,10 +1,10 @@
-import * as url from 'url';
 import * as jwt from 'jsonwebtoken';
+import * as url from 'url';
 import * as WebSocket from 'ws';
 
 import settings from '../settings';
 
-import WebServer from './WebServer';
+import WebServer from '../http/Server';
 
 
 let _singletonInstance = null;
@@ -23,7 +23,7 @@ class SocketServer {
   public listen(webServer: WebServer) {
     const httpServer = webServer.httpServer;
     if (!httpServer) {
-      throw Error('WebServer not listening.')
+      throw Error('WebServer not listening.');
     }
     this._server = new WebSocket.Server({
       server: httpServer

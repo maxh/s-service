@@ -3,10 +3,10 @@ import * as express from 'express';
 import * as http from 'http';
 import * as morgan from 'morgan';
 
-import * as middleware from '../infra/middleware';
+import * as middleware from './infra/middleware';
 
-import auth from '../routes/auth';
-import lessons from '../routes/lessons';
+import auth from './routes/auth';
+import lessons from './routes/lessons';
 
 
 let _singletonInstance = null;

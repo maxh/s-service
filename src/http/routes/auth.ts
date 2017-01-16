@@ -5,7 +5,7 @@ import * as googleAuth from '../infra/google-auth';
 import * as middleware from '../infra/middleware';
 import { endpoint } from '../infra/net';
 
-import settings from '../settings';
+import settings from '../../settings';
 
 import DeviceToken from '../models/DeviceToken';
 import Permission, { Provider } from '../models/Permission';
@@ -68,7 +68,7 @@ router.post('/devicetoken', endpoint((req, res) => {
         const [deviceToken, googlePermission] = values;
         if (!googlePermission) {
           return res.sendClientError(
-              'A device token requires a valid serverAuthCode.');
+              'The initial device token requires a valid serverAuthCode.');
         }
         return {deviceToken: deviceToken.token};
       });
