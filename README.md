@@ -4,6 +4,11 @@ A client-agnostic backend service for Scout.
 
 ## Setup
 
+Run mongo if you haven't already:
+```sh
+mongod
+```
+
 To create an initial build and start a server:
 ```sh
 npm run start-dev

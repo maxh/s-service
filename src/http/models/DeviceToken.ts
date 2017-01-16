@@ -27,7 +27,7 @@ const _generateToken = (byteCount) => {
       if (error) {
         reject(error);
       } else {
-        resolve(base64url(buffer));
+        resolve(base64url.encode(buffer));
       }
     });
   });
