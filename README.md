@@ -1,6 +1,6 @@
 # scout-service
 
-A robust backend service for all Scout clients.
+A backend service for all Scout clients.
 
 ## Setup
 
@@ -15,7 +15,19 @@ up changes automatically:
 npm run build
 ```
 
-Hot module reloading doesn't work with TypeScript, best I can tell, so you'll
-probaby want this Chrome Extension to avoid copy/pasting inspector links:
+Hot module reloading doesn't work with TypeScript, best I can tell. You can
+use this to avoid copy/pasting inspector links:
 
-https://nim.ucraft.com
+
+[nodejs-v8-inspector Chrome Extension](https://chrome.google.com/webstore/detail/nodejs-v8-inspector/lfnddfpljnhbneopljflpombpnkfhggl?hl=en)
+
+
+## Lint
+
+```
+npm run lint
+```
+
+```
+npm run fix-lint
+```

@@ -6,9 +6,16 @@
     "removeComments": true,
     "moduleResolution": "node",
     "sourceMap": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "lib": ["es6"],
+    "skipLibCheck": true,
+    "types": ["node"]
   },
+  "exclude": [
+    "node_modules",
+    "**/typings"
+  ],
   "files": [
-    "src/index.ts"
+    "src/app.ts"
   ]
 }

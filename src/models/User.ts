@@ -19,6 +19,7 @@ _schema.plugin(mongooseTimestamp);
 
 const _model = mongoose.model('User', _schema);
 
+
 class User {
   public static findOrCreate(userParams: IUser): Promise<User> {
     const query = {googleId: userParams.googleId};

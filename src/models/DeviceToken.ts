@@ -1,4 +1,4 @@
-import * as base64url from 'base64url';
+import * as base64url from 'base64-url';
 import * as crypto from 'crypto';
 import * as mongoose from 'mongoose';
 import * as mongooseTimestamp from 'mongoose-timestamp';
@@ -32,6 +32,7 @@ const _generateToken = (byteCount) => {
     });
   });
 };
+
 
 class DeviceToken {
   public static createOrReplace(

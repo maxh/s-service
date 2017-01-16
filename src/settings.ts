@@ -1,41 +1,62 @@
 import * as fs from 'fs';
 
-const settings: any = {};
 
-const KEY_PATH = './keys/scout-service-account-credentials.json';
-
-const readFile = (path) => JSON.parse(fs.readFileSync(path).toString());
-
-const PROD_MONGO_BASE =
-    'mongodb://scoutdb-user:IsBx3ASt2Bsv@ds155718.mlab.com:55718';
-
-settings.projectId = 'scout-loftboxlabs';
-
-if (process.env.NODE_ENV === 'production') {
-  settings.port = process.env.PORT;
-  settings.mongoDbName = 'scout-db-prod';
-  settings.urls = {
-    binaryServer: 'wss://' + process.env.HOSTNAME,
-    mainServer: 'https://' + process.env.HOSTNAME,
-    mongo: PROD_MONGO_BASE + '/' + settings.mongoDbName,
+export interface ISettings {
+  projectId: string;
+  port: number;
+  webServerUrl: string;
+  socketServerUrl: string;
+  auth: {
+    jwtExpiresInSeconds: number;
+    keys: any;
+    serviceAccountCredentials: any;
   };
-  settings.auth = {
-    keys: JSON.parse(process.env.AUTH_KEYS),
-    serviceAccountCredentials: JSON.parse(
-        process.env.GOOGLE_SERVICE_ACCOUNT_AUTH_JSON),
-  };
-} else {
-  settings.port = 5000;
-  settings.mongoDbName = 'scout-db-local';
-  settings.urls = {
-    binaryServer: 'ws://localhost:' + settings.port,
-    mainServer: 'http://localhost:' + settings.port,
-    mongo: 'mongodb://127.0.0.1:27017' + '/' + settings.mongoDbName,
-  };
-  settings.auth = {
-    keys: readFile('./keys/keys.json'),
-    serviceAccountCredentials: readFile(KEY_PATH),
+  mongo: {
+    dbName: string;
+    url: string;
   };
 }
 
-export default settings;
+const CREDS_ENV_VAR = process.env.GOOGLE_SERVICE_ACCOUNT_AUTH_JSON;
+const KEY_PATH = './keys/scout-service-account-credentials.json';
+const LOCAL_MONGO = 'mongodb://127.0.0.1:27017';
+const PROD_MONGO =
+    'mongodb://scoutdb-user:IsBx3ASt2Bsv@ds155718.mlab.com:55718';
+
+const _readFile = (path) => JSON.parse(fs.readFileSync(path).toString());
+
+const settings: any = {};
+
+settings.mongo = {};
+settings.auth = {};
+
+settings.projectId = 'scout-loftboxlabs';
+settings.auth.jwtExpiresInSeconds = 60 * 60 * 5;
+
+const _setProd = () => {
+  settings.port = process.env.PORT;
+  settings.webServerUrl = 'https://' + process.env.HOSTNAME;
+  settings.socketServerUrl = 'wss://' + process.env.HOSTNAME;
+  settings.mongo.dbName = 'scout-db-prod';
+  settings.mongo.url = PROD_MONGO + '/' + settings.mongoDbName;
+  settings.auth.keys = JSON.parse(process.env.AUTH_KEYS);
+  settings.auth.serviceAccountCredentials = JSON.parse(CREDS_ENV_VAR);
+};
+
+const _setDev = () => {
+  settings.port = 5000;
+  settings.webServerUrl = 'https://localhost:' + settings.port;
+  settings.socketServerUrl = 'wss://localhost:' + settings.port;
+  settings.mongo.dbName = 'scout-db-local';
+  settings.mongo.url = LOCAL_MONGO + '/' + settings.mongo.dbName;
+  settings.auth.keys = _readFile('./keys/keys.json');
+  settings.auth.serviceAccountCredentials = _readFile(KEY_PATH);
+};
+
+if (process.env.NODE_ENV === 'production') {
+  _setProd();
+} else {
+  _setDev();
+}
+
+export default settings as ISettings;

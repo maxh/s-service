@@ -1,49 +1,10 @@
 // Custom Express middleware.
-
-import DeviceToken from '../models/DeviceToken';
-
-
-interface ITokenHeader {
-  appId: string;
-  tokenType: string;
-  tokenString: string;
-}
+import { getUserIdFromAuthHeader } from './auth';
 
 
-/**
- * Parses an authorization header value.
- * @throws If unable to parse.
- */
-const _parseTokenHeader = (header: string): Promise<ITokenHeader> => {
-  // Valid headers look like 'Scout DeviceToken foobar123'
-  // TODO(max): Add support for 'Scout JWT foobar123'
-  return new Promise((resolve, reject) => {
-    try {
-      const parts = header.split(' ');
-      const [appId, tokenType, tokenString] = parts;
-      resolve({
-        appId: appId.toLowerCase(),
-        tokenType: tokenType.toLowerCase(),
-        tokenString
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
-
-export const requireToken = (req, res, next) => {
+export const requireAuthHeader = (req, res, next) => {
   const header = req.get('authorization');
-  const userIdPromise = _parseTokenHeader(header).then(parsed => {
-    const {appId, tokenType, tokenString} = parsed;
-    if (appId === 'scout' && tokenType === 'devicetoken') {
-      return DeviceToken.verify(tokenString);
-    } else {
-      throw Error();
-    }
-  });
-
-  userIdPromise
+  getUserIdFromAuthHeader(header)
       .then(userId => {
         // Attach the userId to the request for use in handlers.
         req.userId = userId;

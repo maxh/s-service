@@ -29,7 +29,7 @@ export const getTokenInfoFromServerAuthCode = function(
     code: code,
     scope: scopes.join(' '),
     grant_type: 'authorization_code',
-    redirect_uri: settings.urls.mainServer + '/auth/google/callback',
+    redirect_uri: ''
   };
   const headers = {
     'content-type': 'application/x-www-form-urlencoded',

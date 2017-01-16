@@ -1,7 +1,11 @@
 import * as express from 'express';
+import * as jwt from 'jsonwebtoken';
 
 import * as googleAuth from '../infra/google-auth';
+import * as middleware from '../infra/middleware';
 import { endpoint } from '../infra/net';
+
+import settings from '../settings';
 
 import DeviceToken from '../models/DeviceToken';
 import Permission, { Provider } from '../models/Permission';
@@ -10,11 +14,17 @@ import User from '../models/User';
 
 const router = express.Router();
 
-router.post('/devicetoken', endpoint((req, res) => {
-  if (!req.body) {
-    return res.sendClientError('Authorization details required.');
-  }
+router.use('/jwt/fromdevicetoken', middleware.requireAuthHeader);
+router.post('/jwt/fromdevicetoken', endpoint((req, res) => {
+  const value = {userId: req.userId};
+  const token = jwt.sign(value, settings.auth.keys.jwtSecret, {
+    expiresIn: settings.auth.jwtExpiresInSeconds
+  });
+  return {jwt: token};
+}));
 
+
+router.post('/devicetoken', endpoint((req, res) => {
   const {googleUser, scopes, deviceName} = req.body;
 
   const tokenInfoPromise = googleAuth.getTokenInfoFromServerAuthCode(
@@ -63,5 +73,6 @@ router.post('/devicetoken', endpoint((req, res) => {
         return {deviceToken: deviceToken.token};
       });
 }));
+
 
 export default router;
