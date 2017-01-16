@@ -13,7 +13,6 @@ const computeExpiration = (secondsFromNow: number) : number => {
 };
 
 export const getGoogleId = (idToken: string): Promise<string> => {
-  // See https://developers.google.com/identity/sign-in/web/backend-auth
   const url = ID_TOKEN_ENDPOINT + idToken;
   return fetchJson(url).then(json => json.sub);
 };
@@ -47,3 +46,7 @@ export const getTokenInfoFromServerAuthCode = function(
     };
   });
 };
+
+
+// Reading list:
+// https://developers.google.com/identity/sign-in/ios/backend-auth
