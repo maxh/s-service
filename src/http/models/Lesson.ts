@@ -3,6 +3,7 @@ import * as mongooseTimestamp from 'mongoose-timestamp';
 
 
 export interface ILesson {
+  id?: string;
   question: string;
   fnName: string;
   userId: string;
@@ -48,6 +49,7 @@ class Lesson {
 
   public serialize(): ILesson {
     return {
+      id: this._document.id,
       question: this._document.question,
       fnName: this._document.fnName,
       userId: this._document.userId,

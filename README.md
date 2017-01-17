@@ -2,6 +2,13 @@
 
 A client-agnostic backend service for Scout.
 
+## Concepts
+
+A `lesson` maps an `utterance` to an `answer`.
+A `transcript` is the text we get back from the Google Speech Recognition API.
+A `teacher` is what you use to create a `lesson`.
+`teachers` are grouped into `teacherSets` based on semantics and permissions.
+
 ## Setup
 
 Run mongo if you haven't already:

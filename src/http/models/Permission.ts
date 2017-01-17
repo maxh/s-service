@@ -68,6 +68,28 @@ class Permission {
     });
   };
 
+  public static getGoogleTokenForUserId = (user) => {
+    return new Promise((resolve, reject) => {
+      Permissions.getObject(user._id, Permissions.GOOGLE, function(perms) {
+        const BUFFER = 5 * 60;
+        const currentTimeInSecs = new Date().getTime() / 1000;
+        const isTokenValid = perms.tokenExpiration - BUFFER > currentTimeInSecs;
+
+        if (isTokenValid) return resolve(perms.accessToken);
+
+        refresh.requestNewAccessToken('google', perms.refreshToken,
+          (err, accessToken, refreshToken, params) => {
+            if (err) console.log('Failed to get new access token', err);
+            Permissions.updateAccessToken(user._id, Permissions.GOOGLE,
+              accessToken, params.expires_in, function() {
+              resolve(accessToken);
+            });
+          }
+        );
+      });
+    });
+  }
+
   public static find = function(
       userId: string,
       provider: string): Promise<Permission> {
