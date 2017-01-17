@@ -123,7 +123,7 @@ weather.teachers = [
       const location = params.location;
       return new Promise(function(resolve, reject) {
         getLatLong(location)
-          .then(function(resp) {
+          .then(function(resp: any) {
             forecast.latitutde(resp.lat).longitude(resp.lng)
               .get()
               .then(function(resp) {
@@ -166,7 +166,7 @@ weather.teachers = [
       const location = params.location;
       return new Promise(function(resolve, reject) {
         getLatLong(location)
-          .then(function(resp) {
+          .then(function(resp: any) {
             forecast.latitutde(resp.lat).longitude(resp.lng)
               .get()
               .then(function(resp) {
