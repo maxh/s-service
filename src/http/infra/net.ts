@@ -11,7 +11,7 @@ export const endpoint = (fn) => {
 
     // Attach a convenience function to send a JSON client error.
     res.sendClientError = message => {
-      return res.status(400).json({error: message});
+      return res.status(400).json({ error: message });
     };
 
     // Catch errors in the form of a rejected promise.
@@ -31,7 +31,7 @@ export const endpoint = (fn) => {
     }).catch(error => {
       console.error('Error in handler:\n', error);
       if (!res.headersSent) {
-        return res.status(500).send({error: 'Internal server error.'});
+        return res.status(500).send({ error: 'Internal server error.' });
       }
     });
   };

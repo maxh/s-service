@@ -10,18 +10,18 @@ interface IDeviceToken {
   deviceName: string;
 }
 
-const _schema = new mongoose.Schema({
+const schema = new mongoose.Schema({
   token: String,
   userId: String,
   deviceName: String,
 });
-_schema.plugin(mongooseTimestamp);
+schema.plugin(mongooseTimestamp);
 
-const _model = mongoose.model('DeviceToken', _schema);
+const model = mongoose.model('DeviceToken', schema);
 
 const BYTE_COUNT = 40;
 
-const _generateToken = (byteCount) => {
+const generateToken = (byteCount) => {
   return new Promise((resolve, reject) => {
     crypto.randomBytes(byteCount, (error, buffer) => {
       if (error) {
@@ -38,18 +38,18 @@ class DeviceToken {
   public static createOrReplace(
       userId: string,
       deviceName: string): Promise<DeviceToken> {
-    const deleteExistingPromise = _model.findOne({userId, deviceName})
+    const deleteExistingPromise = model.findOne({ userId, deviceName })
       .then(existingDoc => {
         if (existingDoc) {
           return existingDoc.remove();
         }
       });
 
-    const tokenPromise = _generateToken(BYTE_COUNT);
+    const tokenPromise = generateToken(BYTE_COUNT);
 
     return Promise.all([tokenPromise, deleteExistingPromise]).then(values => {
       const token = values[0];
-      return _model.create({
+      return model.create({
         userId,
         deviceName,
         token,
@@ -66,7 +66,7 @@ class DeviceToken {
   }
 
   public static getByToken(token: string): Promise<DeviceToken> {
-    return _model.findOne({token: token}).then(doc => {
+    return model.findOne({ token }).then(doc => {
       if (!doc) {
         throw Error('Invalid token.');
       }
@@ -74,18 +74,18 @@ class DeviceToken {
     });
   }
 
-  private _document: IDeviceToken & mongoose.Document;
+  private document: IDeviceToken & mongoose.Document;
 
   constructor(document) {
-    this._document = document;
+    this.document = document;
   }
 
   get token(): string {
-    return this._document.token;
+    return this.document.token;
   }
 
   get userId(): string {
-    return this._document.userId;
+    return this.document.userId;
   }
 }
 

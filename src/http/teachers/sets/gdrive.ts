@@ -128,11 +128,11 @@ gdrive.teachers = [
     name: 'findFileByName',
     exec: function(params) {
       const options = {
-          corpus: 'DEFAULT',
-          q: `title contains '${params.filename}'`,
-          maxResults: 100,
-          orderBy: 'lastViewedByMeDate desc'
-        };
+        corpus: 'DEFAULT',
+        q: `title contains '${params.filename}'`,
+        maxResults: 100,
+        orderBy: 'lastViewedByMeDate desc'
+      };
       return fetchItems(params.userId, options).then((items) => {
         if (!items || items.length === 0) {
           return 'I couldn\'t find a file by that name.';
@@ -141,7 +141,7 @@ gdrive.teachers = [
       });
     },
     description: 'Find files by a specific filename',
-    params: {filename: 'The file name to search for' },
+    params: { filename: 'The file name to search for' },
   },
   {
     name: 'findFileByOwner',
@@ -160,7 +160,7 @@ gdrive.teachers = [
       });
     },
     description: 'Find files created by a particular person',
-    params: {owner: 'The owner to search for'},
+    params: { owner: 'The owner to search for' },
   },
   {
     name: 'openFolderByName',
@@ -179,7 +179,7 @@ gdrive.teachers = [
       });
     },
     description: 'Open a specific folder',
-    params: {folderName: 'The name of the folder to open'},
+    params: { folderName: 'The name of the folder to open' },
   },
   {
     name: 'showAllFolders',

@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 
-import SocketServer from './ws/Server';
 import WebServer from './http/Server';
+import SocketServer from './ws/Server';
 
 import settings from './settings';
 

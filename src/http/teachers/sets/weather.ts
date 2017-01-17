@@ -11,7 +11,7 @@ weather.teachers = [
     exec: function(params) {
       const city = params.city;
       return new Promise(function(resolve, reject) {
-        weather.find({search: city, degreeType: 'F'}, function(err, result) {
+        weather.find({ search: city, degreeType: 'F' }, function(err, result) {
           if (err) {
             return reject(err);
           }
@@ -30,7 +30,7 @@ weather.teachers = [
     exec: function(params) {
       const city = params.city;
       return new Promise(function(resolve, reject) {
-        weather.find({search: city, degreeType: 'F'}, function(err, result) {
+        weather.find({ search: city, degreeType: 'F' }, function(err, result) {
           if (err) {
             return reject(err);
           }
@@ -56,12 +56,12 @@ weather.teachers = [
     exec: function(params) {
       const city = params.city;
       return new Promise(function(resolve, reject) {
-        weather.find({search: city, degreeType: 'F'}, function(err, result) {
+        weather.find({ search: city, degreeType: 'F' }, function(err, result) {
           if (err) {
             return reject(err);
           }
 
-          const {low, high, precip} = result[0].forecast[1];
+          const { low, high, precip } = result[0].forecast[1];
           const answer = `Low of ${low} degrees and a high of ${high} degrees.` +
                          `${precip} percent chance of rain.`;
 
@@ -79,7 +79,7 @@ weather.teachers = [
     exec: function(params) {
       const city = params.city;
       return new Promise(function(resolve, reject) {
-        weather.find({search: city, degreeType: 'F'}, function(err, result) {
+        weather.find({ search: city, degreeType: 'F' }, function(err, result) {
           if (err) {
             return reject(err);
           }

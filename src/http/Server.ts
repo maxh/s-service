@@ -9,30 +9,30 @@ import auth from './routes/auth';
 import lessons from './routes/lessons';
 
 
-let _singletonInstance = null;
+let singletonInstance = null;
 
 class WebServer {
 
-  private _handler: any;
-  private _server: any;
+  private handler: any;
+  private server: any;
 
   constructor() {
-    if (_singletonInstance) {
-      return _singletonInstance;
+    if (singletonInstance) {
+      return singletonInstance;
     }
-    _singletonInstance = this;
+    singletonInstance = this;
 
-    this._handler = express();
+    this.handler = express();
 
     // Log all requests.
-    this._handler.use(morgan('combined'));
+    this.handler.use(morgan('combined'));
 
     // All scout-service requests are JSON, both inbound and outbound.
-    this._handler.use(bodyParser.json());
-    this._handler.use(middleware.forceHttpsUnlessDev);
+    this.handler.use(bodyParser.json());
+    this.handler.use(middleware.forceHttpsUnlessDev);
 
     // Register auth endpoints, only some of which require a token header.
-    this._handler.use('/auth', auth);
+    this.handler.use('/auth', auth);
 
     // Create the API, on which all endpoints require a token header.
     const api = express.Router();
@@ -40,18 +40,18 @@ class WebServer {
     api.use('/lessons', lessons);
 
     // Register API endpoints.
-    this._handler.use('/api', api);
+    this.handler.use('/api', api);
   }
 
   public listen(port: number): Promise<undefined> {
-    this._server = http.createServer(this._handler);
+    this.server = http.createServer(this.handler);
     return new Promise((resolve, reject) => {
-      this._server.listen(port, resolve).on('error', reject);
+      this.server.listen(port, resolve).on('error', reject);
     });
   }
 
   public get httpServer() {
-    return this._server;
+    return this.server;
   }
 }
 

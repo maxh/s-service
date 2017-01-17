@@ -2,9 +2,9 @@
 
 export interface ITeacher {
   name: string;
-  exec(params: any): any;
   description: string;
   params: any;
+  exec(params: any): any;
 }
 
 export interface ITeacherSet {

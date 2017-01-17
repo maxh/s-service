@@ -1,7 +1,7 @@
 // Wrappers for Google OAuth endpoints.
 
-import { ITokenInfo } from '../models/Permission';
 import settings from '../../settings';
+import { ITokenInfo } from '../models/Permission';
 import { fetchJson, urlEncode } from './net';
 
 

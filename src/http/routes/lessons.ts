@@ -16,7 +16,7 @@ router.get('/', endpoint((req, res) => {
 }));
 
 router.post('/', endpoint((req, res) => {
-  const {question, fnName, params} = req.body;
+  const { question, fnName, params } = req.body;
   const lessonParams = {
     question,
     fnName,

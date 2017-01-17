@@ -11,7 +11,7 @@ interface ITokenHeader {
  * Parses an authorization header value.
  * @throws If unable to parse.
  */
-const _parseTokenHeader = (header: string): Promise<ITokenHeader> => {
+const parseTokenHeader = (header: string): Promise<ITokenHeader> => {
   // Valid headers look like 'scout devicetoken foobar123'
   // TODO(max): Add support for 'scout jwt foobar123'
   return new Promise((resolve, reject) => {
@@ -30,8 +30,8 @@ const _parseTokenHeader = (header: string): Promise<ITokenHeader> => {
 };
 
 export const getUserIdFromAuthHeader = (header) => {
-  return _parseTokenHeader(header).then(parsed => {
-    const {appId, tokenType, tokenString} = parsed;
+  return parseTokenHeader(header).then(parsed => {
+    const { appId, tokenType, tokenString } = parsed;
     if (appId === 'scout' && tokenType === 'devicetoken') {
       return DeviceToken.verify(tokenString);
     } else {

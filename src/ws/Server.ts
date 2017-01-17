@@ -7,17 +7,17 @@ import settings from '../settings';
 import WebServer from '../http/Server';
 
 
-let _singletonInstance = null;
+let singletonInstance = null;
 
 class SocketServer {
 
-  private _server: any;
+  private server: any;
 
   constructor() {
-    if (_singletonInstance) {
-      return _singletonInstance;
+    if (singletonInstance) {
+      return singletonInstance;
     }
-    _singletonInstance = this;
+    singletonInstance = this;
   }
 
   public listen(webServer: WebServer) {
@@ -25,10 +25,10 @@ class SocketServer {
     if (!httpServer) {
       throw Error('WebServer not listening.');
     }
-    this._server = new WebSocket.Server({
+    this.server = new WebSocket.Server({
       server: httpServer
     });
-    this._server.on('connection', ws => {
+    this.server.on('connection', ws => {
       const location = url.parse(ws.upgradeReq.url, true);
       const token = location.query.jwt;
 

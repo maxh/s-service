@@ -23,7 +23,7 @@ const LOCAL_MONGO = 'mongodb://127.0.0.1:27017';
 const PROD_MONGO =
     'mongodb://scoutdb-user:IsBx3ASt2Bsv@ds155718.mlab.com:55718';
 
-const _readFile = (path) => JSON.parse(fs.readFileSync(path).toString());
+const readFile = (path) => JSON.parse(fs.readFileSync(path).toString());
 
 const settings: any = {};
 
@@ -33,7 +33,7 @@ settings.auth = {};
 settings.projectId = 'scout-loftboxlabs';
 settings.auth.jwtExpiresInSeconds = 60 * 60 * 5;
 
-const _setProd = () => {
+const setProd = () => {
   settings.port = process.env.PORT;
   settings.webServerUrl = 'https://' + process.env.HOSTNAME;
   settings.socketServerUrl = 'wss://' + process.env.HOSTNAME;
@@ -43,20 +43,20 @@ const _setProd = () => {
   settings.auth.serviceAccountCredentials = JSON.parse(CREDS_ENV_VAR);
 };
 
-const _setDev = () => {
+const setDev = () => {
   settings.port = 5000;
   settings.webServerUrl = 'https://localhost:' + settings.port;
   settings.socketServerUrl = 'wss://localhost:' + settings.port;
   settings.mongo.dbName = 'scout-db-local';
   settings.mongo.url = LOCAL_MONGO + '/' + settings.mongo.dbName;
-  settings.auth.keys = _readFile('./keys/keys.json');
-  settings.auth.serviceAccountCredentials = _readFile(KEY_PATH);
+  settings.auth.keys = readFile('./keys/keys.json');
+  settings.auth.serviceAccountCredentials = readFile(KEY_PATH);
 };
 
 if (process.env.NODE_ENV === 'production') {
-  _setProd();
+  setProd();
 } else {
-  _setDev();
+  setDev();
 }
 
 export default settings as ISettings;

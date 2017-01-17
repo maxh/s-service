@@ -10,50 +10,50 @@ export interface ILesson {
   params: Object;
 }
 
-const _schema = new mongoose.Schema({
+const schema = new mongoose.Schema({
   question: String,
   fnName: String,
   userId: String,
   params: Object,
 });
-_schema.plugin(mongooseTimestamp);
+schema.plugin(mongooseTimestamp);
 
-const _model = mongoose.model('Lesson', _schema);
+const model = mongoose.model('Lesson', schema);
 
 
 class Lesson {
   public static create(params: ILesson): Promise<Lesson> {
-    return _model.create(params).then(doc => {
+    return model.create(params).then(doc => {
       return new Lesson(doc);
     });
   }
 
   public static getAll(userId: string): Promise<Lesson[]> {
-    return _model.find({userId}).then(docList => {
+    return model.find({ userId }).then(docList => {
       return docList.map(doc => new Lesson(doc));
     });
   }
 
   public static delete(userId: string, lessonId: string): Promise<undefined> {
-    return _model.remove({userId, lessonId}).then(() => {
+    return model.remove({ userId, lessonId }).then(() => {
       // Resolve to nothing if the deletion succeeded.
       return undefined;
     });
   }
 
-  private _document: ILesson & mongoose.Document;
+  private document: ILesson & mongoose.Document;
 
   constructor(document) {
-    this._document = document;
+    this.document = document;
   }
 
   public serialize(): ILesson {
     return {
-      id: this._document.id,
-      question: this._document.question,
-      fnName: this._document.fnName,
-      userId: this._document.userId,
-      params: this._document.params,
+      id: this.document.id,
+      question: this.document.question,
+      fnName: this.document.fnName,
+      userId: this.document.userId,
+      params: this.document.params,
     };
   }
 }

@@ -12,7 +12,7 @@ export const requireAuthHeader = (req, res, next) => {
         next();
       })
       .catch(() => {
-        res.status(403).send({error: 'Invalid token.'});
+        res.status(403).send({ error: 'Invalid token.' });
       });
 };
 

@@ -13,7 +13,7 @@ timer.teachers = [
       });
     },
     description: 'Sets a timer',
-    params: {time: 'The amount of time'},
+    params: { time: 'The amount of time' },
   },
 ];
 

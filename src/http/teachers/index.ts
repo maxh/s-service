@@ -34,13 +34,13 @@ const teacherSets = [
 ];
 
 const moduleNamesToTeacherSet = {};
-const teacher = {};
+const teachers = {};
 
 teacherSets.forEach((teacherSet) => {
   moduleNamesToTeacherSet[teacherSet.moduleName] = teacherSet;
   teacherSet.teachers.forEach(teacher => {
-    teacher[teacher.name] = teacher;
+    teachers[teacher.name] = teachers;
   });
 });
 
-export teacher;
+export teachers;

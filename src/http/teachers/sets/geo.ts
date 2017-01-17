@@ -15,7 +15,7 @@ geo.teachers = [
       });
     },
     params: {
-        address: 'The address to which you\'re driving.',
+      address: 'The address to which you\'re driving.',
     },
   },
   {

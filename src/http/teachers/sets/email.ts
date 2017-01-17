@@ -14,7 +14,7 @@ const fetchEmails = (user, query, max = 100) => {
   return new Promise(function(resolve, reject) {
     Permission.getGoogleTokenForUserId(user).then((gtoken) => {
       const gmail = new Gmail(gtoken);
-      const s = gmail.messages(query, {max: max}, {fields: ['snippet']});
+      const s = gmail.messages(query, { max: max }, { fields: ['snippet'] });
 
       const resp = [];
 
@@ -77,7 +77,7 @@ email.teachers = [
     exec: function(params) {
       return Permission.getGoogleTokenForUserId(params.userId).then((gtoken) => {
         const gmail = new Gmail(gtoken);
-        const s = gmail.messages('in:inbox is:unread', {max: 100}, {fields: ['payload']});
+        const s = gmail.messages('in:inbox is:unread', { max: 100 }, { fields: ['payload'] });
         const resp = [];
 
         s.on('data', function(d) {

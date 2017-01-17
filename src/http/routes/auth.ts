@@ -16,16 +16,16 @@ const router = express.Router();
 
 router.use('/jwt/fromdevicetoken', middleware.requireAuthHeader);
 router.post('/jwt/fromdevicetoken', endpoint((req, res) => {
-  const value = {userId: req.userId};
+  const value = { userId: req.userId };
   const token = jwt.sign(value, settings.auth.keys.jwtSecret, {
     expiresIn: settings.auth.jwtExpiresInSeconds
   });
-  return {jwt: token};
+  return { jwt: token };
 }));
 
 
 router.post('/devicetoken', endpoint((req, res) => {
-  const {googleUser, scopes, deviceName} = req.body;
+  const { googleUser, scopes, deviceName } = req.body;
 
   const tokenInfoPromise = googleAuth.getTokenInfoFromServerAuthCode(
       scopes, googleUser.serverAuthCode).catch(error => {
@@ -70,7 +70,7 @@ router.post('/devicetoken', endpoint((req, res) => {
           return res.sendClientError(
               'The initial device token requires a valid serverAuthCode.');
         }
-        return {deviceToken: deviceToken.token};
+        return { deviceToken: deviceToken.token };
       });
 }));
 
