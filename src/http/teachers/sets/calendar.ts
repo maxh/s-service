@@ -1,26 +1,30 @@
 import gcal from 'google-calendar';
 import moment from 'moment';
-import Permissions from '../../models/Permissions';
+import Permission from '../../models/Permission';
 import { ITeacherSet } from '../interface';
 
 
 const calendar = {} as ITeacherSet;
 
 const makeCalRequest = (user, startTime, endTime, calId = 'primary') => {
-  return new Promise(function(resolve, reject) {
-    Permissions.getGoogleTokenForUserId(user).then((gtoken) => {
-      gcal(gtoken).events.list(
-        calId, {
-          orderBy: 'startTime',
-          singleEvents: true,
-          timeMin: startTime.toISOString(),
-          timeMax: endTime.toISOString()
-        }, function(err, data) {
-          if (err) return reject(err);
-          return resolve(data);
-        });
-    });
+  return Permission.getGoogleTokenForUserId(user).then((gtoken) => {
+    gcal(gtoken).events.list(
+      calId, {
+        orderBy: 'startTime',
+        singleEvents: true,
+        timeMin: startTime.toISOString(),
+        timeMax: endTime.toISOString()
+      }, function(err, data) {
+        if (err) {
+          return err;
+        }
+        return data;
+      });
   });
+};
+
+const buildListString = (items) => {
+  return items.slice(0, items.length - 1).join(', ') + ', and ' + items.slice(-1);
 };
 
 const formatEventString = (event) => {
@@ -80,8 +84,8 @@ calendar.teachers = [
             return reject(error);
           });
       });
-   },
-   params: {},
+    },
+    params: {},
   },
 
   {
@@ -105,8 +109,7 @@ calendar.teachers = [
               return event.summary;
             });
 
-            const sentence = items.slice(0, items.length - 1).join(', ') + ', and ' + items.slice(-1);
-            resolve(sentence);
+            resolve(buildListString(items));
           })
           .catch(function(error) {
             return resolve(error);
@@ -127,15 +130,16 @@ calendar.teachers = [
 
         makeCalRequest(params.user, today, laterToday)
           .then(function(data) {
-            if (data.items.length === 0) return resolve('You have nothing on your calendar!');
+            if (data.items.length === 0) {
+              return resolve('You have nothing on your calendar!');
+            }
 
             const items = data.items.map(function(event) {
               const start = moment(event.start.dateTime).format('ha');
               return `${event.summary} at ${start}`;
             });
 
-            const sentence = items.slice(0, items.length - 1).join(', ') + ', and ' + items.slice(-1);
-            resolve(sentence);
+            resolve(buildListString(items));
           })
           .catch(function(error) {
             return reject(error);
@@ -158,15 +162,16 @@ calendar.teachers = [
 
         makeCalRequest(params.user, tomorrow, tomorrowEve)
           .then(function(data) {
-            if (data.items.length === 0) return resolve('You have nothing on your calendar!');
+            if (data.items.length === 0) {
+              return resolve('You have nothing on your calendar!');
+            }
 
             const items = data.items.map(function(event) {
               const start = moment(event.start.dateTime).format('ha');
               return `${event.summary} at ${start}`;
             });
 
-            const sentence = items.slice(0, items.length - 1).join(', ') + ', and ' + items.slice(-1);
-            resolve(sentence);
+            resolve(buildListString(items));
           })
           .catch(function(error) {
             return reject(error);
@@ -210,8 +215,9 @@ calendar.teachers = [
 
         makeCalRequest(params.user, now, next)
           .then(function(data) {
-            if (!data.items || !data.items[0])
+            if (!data.items || !data.items[0]) {
               resolve('I couldn\'t find a \'next meeting\' on your calendar.');
+            }
 
             const interval = moment(new Date()).to(data.items[0].start.dateTime, true);
             return resolve(interval);
@@ -262,11 +268,14 @@ calendar.teachers = [
 
         makeCalRequest(params.user, now, next, calId).then(function(data) {
           const matches = data.items.filter(function(event) {
-            return event.summary.indexOf(query) != -1;
+            return event.summary.indexOf(query) !== -1;
           });
 
           const events = matches.map(function(event) {
-            return `${event.summary} from ${moment(event.start.dateTime).format('hA')} to ${moment(event.end.dateTime).format('hA')} on ${moment(event.end.dateTime).format('MMM Do')}`;
+            const start = moment(event.start.dateTime).format('hA');
+            const endH = moment(event.end.dateTime).format('hA');
+            const endM = moment(event.end.dateTime).format('MMM Do');
+            return `${event.summary} from ${start} to ${endH} on ${endM}`;
           });
 
           resolve(events.join('; '));
@@ -291,7 +300,10 @@ calendar.teachers = [
 
       return new Promise(function(resolve, reject) {
         // currently looks a month out. this doesn't have to be hardcoded, ofc
-        const now = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);
+        const now = new Date(
+            new Date().getFullYear(),
+            new Date().getMonth(),
+            new Date().getDate() + 1);
         const next = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
 
         makeCalRequest(params.user, now, next, calId).then(function(data) {
@@ -318,8 +330,10 @@ calendar.teachers = [
             const windowEnd = moment(now).hour(stopRange);
 
             // if the event starts or ends in between the given window, splice it out
-            if ( (eventStart.hours() > windowStart.hours() && eventStart.hours() < windowEnd.hours() ) ||
-                ( eventEnd.hours() > windowStart.hours() && eventEnd.hours() < windowEnd.hours() )) {
+            if ( (eventStart.hours() > windowStart.hours() &&
+                     eventStart.hours() < windowEnd.hours() ) ||
+                ( eventEnd.hours() > windowStart.hours() &&
+                      eventEnd.hours() < windowEnd.hours() )) {
               const index = matches.indexOf(eventStart.format('MMM Do'));
               matches.splice(index, 1);
             }
@@ -331,9 +345,12 @@ calendar.teachers = [
         });
       });
     },
-    description: 'Find the next block of free time on your calendar in a specific time range – say 8-10a',
+    description: (
+        'Find the next block of free time on ' +
+        'your calendar in a specific time range – say 8-10a'
+    ),
     params: {
-      range: 'Comma-separated times. Use 24h time, e.g. '17,19' for 5-7p.'
+      range: 'Comma-separated times. Use 24h time, e.g. \'17,19\' for 5-7p.'
     },
   },
 ];

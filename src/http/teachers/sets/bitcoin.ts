@@ -24,18 +24,18 @@ bitcoin.teachers = [
             reject(err);
           }
 
-          let wideData = bitcoinity.parseCSV(csvData);
+          const wideData = bitcoinity.parseCSV(csvData);
           const row = wideData.rows[wideData.rows.length - 1];
 
-          const sum = Object.keys(row).reduce(function(sum, key) {
+          const sum = Object.keys(row).reduce(function(sumInner, key) {
             if (key === 'Time') {
-              return sum;
+              return sumInner;
             }
-            return sum + parseFloat(row[key]);
+            return sumInner + parseFloat(row[key]);
           }, 0);
 
           const exchange = wideData.rows[wideData.rows.length - 1][name];
-          const share = `${Math.round(exchange/sum * 100 * 100)/100}%`
+          const share = `${Math.round(exchange / sum * 100 * 100) / 100}%`;
 
           resolve(share);
         });
@@ -46,7 +46,7 @@ bitcoin.teachers = [
       answer: 'The exchange to look up',
     },
   },
-]
+];
 
 bitcoin.moduleName = 'Bitcoin';
 

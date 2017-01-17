@@ -28,8 +28,9 @@ basic.teachers = [
 
         Object.keys(params).map(function(key, index) {
           // kinda hacky, there's also a params.user I don't want to include
-          if (key.indexOf('poss') != -1 && params[key] !== null)
+          if (key.indexOf('poss') !== -1 && params[key] !== null) {
             potentials.push(params[key]);
+          }
         });
 
         const answer = potentials[Math.floor(Math.random() * potentials.length)];
