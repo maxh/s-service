@@ -17,6 +17,6 @@ timer.teachers = [
   },
 ];
 
-timer.moduleName = 'Timer';
+timer.name = 'Timer';
 
 export default timer;

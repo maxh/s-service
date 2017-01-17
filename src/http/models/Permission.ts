@@ -17,6 +17,7 @@ export interface ITokenInfo {
 };
 
 export interface IPermission {
+  id?: string;
   userId: string;
   accessToken: string;
   accessTokenExpiration: number;
@@ -149,6 +150,10 @@ class Permission {
 
   get scopes(): string[] {
     return this.document.scopes;
+  }
+
+  get accessToken() {
+    return this.document.accessToken;
   }
 }
 

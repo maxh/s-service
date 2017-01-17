@@ -20,6 +20,6 @@ browser.teachers = [
   }
 ];
 
-browser.moduleName = 'Browser';
+browser.name = 'Browser';
 
 export default browser;

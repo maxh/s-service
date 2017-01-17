@@ -8,7 +8,8 @@ import { endpoint } from '../infra/net';
 const router = express.Router();
 
 router.get('/', endpoint((req, res) => {
-  return Lesson.getAll(req.userId).then(lessons => {
+  const { userId } = req;
+  return Lesson.getAll(userId).then(lessons => {
     return {
       lessons: lessons.map(lesson => lesson.serialize())
     };
@@ -16,12 +17,13 @@ router.get('/', endpoint((req, res) => {
 }));
 
 router.post('/', endpoint((req, res) => {
-  const { question, fnName, params } = req.body;
+  const { userId } = req;
+  const { utterance, fnName, params } = req.body;
   const lessonParams = {
-    question,
+    utterance,
     fnName,
     params,
-    userId: req.userId,
+    userId,
   };
   return Lesson.create(lessonParams).then(lesson => {
     return lesson.serialize();
@@ -29,7 +31,9 @@ router.post('/', endpoint((req, res) => {
 }));
 
 router.delete('/:lessonId', endpoint((req, res) => {
-  return Lesson.delete(req.userId, req.params.lessonId);
+  const { userId } = req;
+  const { lessonId } = req.params;
+  return Lesson.delete(userId, lessonId);
 }));
 
 export default router;

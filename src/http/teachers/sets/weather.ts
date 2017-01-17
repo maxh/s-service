@@ -1,4 +1,5 @@
-import weather from 'weather-js';
+import weatherLib from 'weather-js';
+
 import { ITeacherSet } from '../interface';
 
 
@@ -11,7 +12,7 @@ weather.teachers = [
     exec: function(params) {
       const city = params.city;
       return new Promise(function(resolve, reject) {
-        weather.find({ search: city, degreeType: 'F' }, function(err, result) {
+        weatherLib.find({ search: city, degreeType: 'F' }, function(err, result) {
           if (err) {
             return reject(err);
           }
@@ -30,7 +31,7 @@ weather.teachers = [
     exec: function(params) {
       const city = params.city;
       return new Promise(function(resolve, reject) {
-        weather.find({ search: city, degreeType: 'F' }, function(err, result) {
+        weatherLib.find({ search: city, degreeType: 'F' }, function(err, result) {
           if (err) {
             return reject(err);
           }
@@ -56,7 +57,7 @@ weather.teachers = [
     exec: function(params) {
       const city = params.city;
       return new Promise(function(resolve, reject) {
-        weather.find({ search: city, degreeType: 'F' }, function(err, result) {
+        weatherLib.find({ search: city, degreeType: 'F' }, function(err, result) {
           if (err) {
             return reject(err);
           }
@@ -79,7 +80,7 @@ weather.teachers = [
     exec: function(params) {
       const city = params.city;
       return new Promise(function(resolve, reject) {
-        weather.find({ search: city, degreeType: 'F' }, function(err, result) {
+        weatherLib.find({ search: city, degreeType: 'F' }, function(err, result) {
           if (err) {
             return reject(err);
           }
@@ -107,6 +108,6 @@ weather.teachers = [
   },
 ];
 
-weather.moduleName = 'Weather';
+weather.name = 'Weather';
 
 export default weather;

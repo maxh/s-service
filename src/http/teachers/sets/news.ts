@@ -89,6 +89,6 @@ news.teachers = [
   },
 ];
 
-news.moduleName = 'News';
+news.name = 'News';
 
 export default news;

@@ -5,9 +5,9 @@ import { ITeacherSet } from '../interface';
 import Permission from '../../models/Permission';
 
 
-const fetchItems = (userId, options) => {
-  return new Promise(function(resolve, reject) {
-    Permission.getGoogleTokenForUserId(userId).then((gtoken) => {
+const fetchItems = (userId, options): Promise<any[]> => {
+  return Permission.getGoogleTokenForUserId(userId).then((gtoken) => {
+    return new Promise(function(resolve, reject) {
       googleDrive(gtoken).files().list(options, (err, response, body) => {
         if (err) {
           reject(err);
@@ -202,7 +202,7 @@ gdrive.teachers = [
   },
 ];
 
-gdrive.moduleName = 'Google Drive';
+gdrive.name = 'Google Drive';
 gdrive.permissions = {
   google: ['https://www.googleapis.com/auth/drive.readonly'],
 };

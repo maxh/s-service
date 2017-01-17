@@ -5,6 +5,7 @@ import * as morgan from 'morgan';
 
 import * as middleware from './infra/middleware';
 
+import answers from './routes/answers';
 import auth from './routes/auth';
 import lessons from './routes/lessons';
 
@@ -38,6 +39,7 @@ class WebServer {
     const api = express.Router();
     api.use(middleware.requireAuthHeader);
     api.use('/lessons', lessons);
+    api.use('/answers', answers);
 
     // Register API endpoints.
     this.handler.use('/api', api);

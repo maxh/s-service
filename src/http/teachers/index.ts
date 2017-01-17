@@ -1,46 +1,16 @@
-import airtable from './airtable';
-import basic from './basic';
-import bitcoin from './bitcoin';
-import browser from './browser';
-import calendar from './calendar';
-import chemistry from './chemistry';
-import datetime from './datetime';
-import dropbox from './dropbox';
-import email from './email';
-import finance from './finance';
-import gdrive from './gdrive';
-import geo from './geo';
-import news from './news';
-import timer from './timer';
-import weather from './weather';
+import teacherSets from './sets/index';
 
-
-const teacherSets = [
-  airtable,
-  basic,
-  bitcoin,
-  browser,
-  calendar,
-  chemistry,
-  datetime,
-  dropbox,
-  email,
-  finance,
-  gdrive,
-  geo,
-  news,
-  timer,
-  weather,
-];
-
-const moduleNamesToTeacherSet = {};
-const teachers = {};
+const teacherSetsByName = {};
+const teachersByName = {};
 
 teacherSets.forEach((teacherSet) => {
-  moduleNamesToTeacherSet[teacherSet.moduleName] = teacherSet;
+  teacherSetsByName[teacherSet.name] = teacherSet;
   teacherSet.teachers.forEach(teacher => {
-    teachers[teacher.name] = teachers;
+    teachersByName[teacher.name] = teacher;
   });
 });
 
-export teachers;
+export {
+  teachersByName,
+  teacherSetsByName
+};

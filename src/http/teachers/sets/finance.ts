@@ -42,6 +42,6 @@ finance.teachers = [
   },
 ];
 
-finance.moduleName = 'Finance';
+finance.name = 'Finance';
 
 export default finance;

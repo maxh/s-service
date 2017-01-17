@@ -1,6 +1,9 @@
-import PeriodicTable from '../data/periodicTable.json';
+import * as fs from 'fs';
+
 import { ITeacherSet } from '../interface';
 
+
+const PERIODIC_TABLE_PATH = '../data/periodicTable.json';
 
 const chemistry = {} as ITeacherSet;
 
@@ -8,25 +11,44 @@ const chemistry = {} as ITeacherSet;
 const FIELDS = ['name','appearance','atomic_mass','boil','category','color','density','discovered_by','melt','molar_heat','named_by','number','period','phase','source','spectral_img','summary','symbol','xpos','ypos'];
 /* tslint:enable */
 
+let cachedPeriodicTable = null;
+
+const loadPeriodicTable = () => {
+  return new Promise((resolve, reject) => {
+    if (cachedPeriodicTable) {
+      resolve(cachedPeriodicTable);
+      return;
+    }
+    fs.readFile(PERIODIC_TABLE_PATH, (error, data) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      cachedPeriodicTable = data;
+      resolve(data);
+    });
+  });
+};
+
 const fetchInfo = (field, params) => {
-  return new Promise(function(resolve, reject) {
+  return loadPeriodicTable().then((periodicTable: any) => {
     if (FIELDS.indexOf(field) < 0) {
-      return resolve('I don\'t have information on that field.');
+      return 'I don\'t have information on that field.';
     }
 
-    const element = PeriodicTable.elements.filter(function(el) {
+    const element = periodicTable.elements.filter(function(el) {
       return el.name.toLowerCase() === params.element.toLowerCase();
     })[0];
 
     if (!element) {
-      return resolve('I couldn\'t find that element');
+      return 'I couldn\'t find that element';
     }
 
-    resolve(element[field]);
+    return element[field];
   });
 };
 
-const Chemistry = [
+chemistry.teachers = [
   {
     name: 'appearance',
     exec: function(params) {
@@ -149,6 +171,6 @@ const Chemistry = [
   },
 ];
 
-Chemistry.moduleName = 'Chemistry';
+chemistry.name = 'Chemistry';
 
-export default Chemistry;
+export default chemistry;

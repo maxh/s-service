@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as moment from 'moment';
 import Gmail from 'node-gmail-api';
 
 import Permission from '../../models/Permission';
@@ -10,7 +10,7 @@ const buildSearchUrl = (messageId) => {
   return SEARCH_URL_BASE + encodeURIComponent(messageId);
 };
 
-const fetchEmails = (user, query, max = 100) => {
+const fetchEmails = (user, query, max = 100): Promise<any[]> => {
   return new Promise(function(resolve, reject) {
     Permission.getGoogleTokenForUserId(user).then((gtoken) => {
       const gmail = new Gmail(gtoken);
@@ -201,7 +201,7 @@ email.teachers = [
   },
 ];
 
-email.moduleName = 'Email';
+email.name = 'Email';
 email.permissions =  {
   google: ['https://www.googleapis.com/auth/gmail.readonly'],
 };

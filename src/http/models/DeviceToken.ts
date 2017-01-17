@@ -5,6 +5,7 @@ import * as mongooseTimestamp from 'mongoose-timestamp';
 
 
 interface IDeviceToken {
+  id?: string;
   token: string;
   userId: string;
   deviceName: string;

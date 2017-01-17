@@ -27,7 +27,15 @@ up changes automatically:
 npm run build
 ```
 
-Hot module reloading doesn't work with TypeScript, best I can tell. You can
-use this to avoid copy/pasting inspector links:
+To avoid copy/pasting inspector links:
 
 [nodejs-v8-inspector Chrome Extension](https://chrome.google.com/webstore/detail/nodejs-v8-inspector/lfnddfpljnhbneopljflpombpnkfhggl?hl=en)
+
+## Implementation notes
+
+For absolute imports TypeScript, requires an [unusual approach](http://www.jbrantly.com/es6-modules-with-typescript-and-webpack/):
+
+```js
+import someLib from 'someLib'; // this will throw an error
+import * as someLib from 'someLib'; // this will work
+```

@@ -49,6 +49,6 @@ airtable.teachers = [
   },
 ];
 
-airtable.moduleName = 'Airtable';
+airtable.name = 'Airtable';
 
 export default airtable;

@@ -46,6 +46,6 @@ geo.teachers = [
   },
 ];
 
-geo.teachers = 'Geo';
+geo.name = 'Geo';
 
 export default geo;

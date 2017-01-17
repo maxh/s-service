@@ -1,11 +1,10 @@
 import chrono from 'chrono-node';
-import moment from 'moment';
+import * as moment from 'moment';
 import momentTimezone from 'moment-timezone';
 import timezoner from 'timezoner';
 
-import { getLatLong } from '../../infra/geo';
-
 import settings from '../../../settings';
+import { getLatLong } from '../../infra/geo';
 import { ITeacherSet } from '../interface';
 
 
@@ -17,7 +16,6 @@ datetime.teachers = [
     description: 'How long until a specific date?',
     exec: function(params) {
       return new Promise(function(resolve, reject) {
-        const date = new Date();
         const futureDate = new Date(chrono.parseDate(params.futureDate));
         const diff = moment(futureDate).toNow(true);
         resolve(diff);
@@ -32,7 +30,7 @@ datetime.teachers = [
     description: 'Look up what time it is in a specific city.',
     exec: function(params) {
       const city = params.city;
-      return getLatLong(city).then(function(data) {
+      return getLatLong(city).then(function(data: any) {
         timezoner.getTimeZone(data.lat, data.lng, function(err, result) {
           if (err) {
             throw err;
@@ -52,6 +50,6 @@ datetime.teachers = [
   },
 ];
 
-datetime.moduleName = 'Dates and times';
+datetime.name = 'Dates and times';
 
 export default datetime;

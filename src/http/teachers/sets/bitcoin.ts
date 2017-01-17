@@ -48,6 +48,6 @@ bitcoin.teachers = [
   },
 ];
 
-bitcoin.moduleName = 'Bitcoin';
+bitcoin.name = 'Bitcoin';
 
 export default bitcoin;

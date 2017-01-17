@@ -3,6 +3,7 @@ import * as mongooseTimestamp from 'mongoose-timestamp';
 
 
 export interface IUser {
+  id?: string;
   googleId: string;
   name: string;
   gender?: string;

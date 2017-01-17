@@ -48,6 +48,6 @@ basic.teachers = [
   },
 ];
 
-Basic.moduleName = 'Basic';
+basic.name = 'Basic';
 
-export default Basic;
+export default basic;

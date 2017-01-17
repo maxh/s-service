@@ -1,4 +1,5 @@
 import DropboxSDK from 'dropbox';
+
 import Permission, { Provider } from '../../models/Permission';
 import { ITeacherSet } from '../interface';
 
@@ -6,8 +7,8 @@ import { ITeacherSet } from '../interface';
 const dropbox = {} as ITeacherSet;
 
 const getAuthorizedDropboxSdk = (userId) => {
-  return Permission.find(userId, Provider.DROPBOX).then((perm) => {
-    return new DropboxSDK({ accessToken: perm.accessToken });
+  return Permission.find(userId, Provider.DROPBOX).then((permission) => {
+    return new DropboxSDK({ accessToken: permission.accessToken });
   });
 };
 
@@ -96,7 +97,7 @@ dropbox.teachers = [
   },
 ];
 
-dropbox.moduleName = 'Dropbox';
+dropbox.name = 'Dropbox';
 dropbox.permissions = { dropbox: ['full'] };
 
 export default dropbox;

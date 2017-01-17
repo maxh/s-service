@@ -1,25 +1,28 @@
 import gcal from 'google-calendar';
-import moment from 'moment';
+import * as moment from 'moment';
 import Permission from '../../models/Permission';
 import { ITeacherSet } from '../interface';
 
 
 const calendar = {} as ITeacherSet;
 
-const makeCalRequest = (user, startTime, endTime, calId = 'primary') => {
-  return Permission.getGoogleTokenForUserId(user).then((gtoken) => {
-    gcal(gtoken).events.list(
-      calId, {
-        orderBy: 'startTime',
-        singleEvents: true,
-        timeMin: startTime.toISOString(),
-        timeMax: endTime.toISOString()
-      }, function(err, data) {
-        if (err) {
-          return err;
-        }
-        return data;
-      });
+const makeCalRequest = (userId, startTime, endTime, calId = 'primary'): Promise<any> => {
+  return Permission.getGoogleTokenForUserId(userId).then((gtoken) => {
+    return new Promise((resolve, reject) => {
+      gcal(gtoken).events.list(
+        calId, {
+          orderBy: 'startTime',
+          singleEvents: true,
+          timeMin: startTime.toISOString(),
+          timeMax: endTime.toISOString()
+        }, function(err, data) {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(data);
+        });
+    });
   });
 };
 
@@ -309,10 +312,11 @@ calendar.teachers = [
         makeCalRequest(params.user, now, next, calId).then(function(data) {
 
           const days = [];
-          let curr = moment(now).hour(startRange).minutes(0);
-          while (next > curr) {
-            days.push(curr.clone());
-            curr = curr.add(1, 'days');
+          let currMoment = moment(now).hour(startRange).minutes(0);
+          const nextMoment = moment(next);
+          while (nextMoment > currMoment) {
+            days.push(currMoment.clone());
+            currMoment = currMoment.add(1, 'days');
           }
 
           const matches = days.filter(function(day) {
@@ -355,7 +359,7 @@ calendar.teachers = [
   },
 ];
 
-calendar.moduleName = 'Calendar';
+calendar.name = 'Calendar';
 calendar.permissions = {
   google: ['https://www.googleapis.com/auth/calendar'],
 };
