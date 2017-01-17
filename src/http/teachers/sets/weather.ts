@@ -195,6 +195,91 @@ weather.teachers = [
       location: 'The place to look up.',
     },
   },
+  {
+    name: 'sunset',
+    description: 'When will the sun set today?',
+    exec: function(params) {
+      const location = params.location;
+      return new Promise(function(resolve, reject) {
+        getLatLong(location)
+          .then(function(resp: any) {
+            forecast.latitutde(resp.lat).longitude(resp.lng)
+              .get()
+              .then(function(resp) {
+                const sunset = moment(resp.daily.data[0].sunsetTime * 1000).tz(resp.timezone).format("h:mma")
+                resolve(`The sun sets at ${sunset} this evening.`);
+              })
+          })
+          .catch(function(err) {
+            console.log(err);
+            reject(err);
+          })
+        });
+    },
+    params: {
+      location: 'The place to look up.',
+    },
+  },
+  {
+    name: 'sunrise',
+    description: 'When will the sun rise today?',
+    exec: function(params) {
+      const location = params.location;
+      return new Promise(function(resolve, reject) {
+        getLatLong(location)
+          .then(function(resp: any) {
+            forecast.latitutde(resp.lat).longitude(resp.lng)
+              .get()
+              .then(function(resp) {
+                const sunrise = moment(resp.daily.data[0].sunriseTime * 1000).tz(resp.timezone).format("h:mma")
+                resolve(`The sun rose at ${sunrise} this morning.`);
+              })
+          })
+          .catch(function(err) {
+            console.log(err);
+            reject(err);
+          })
+        });
+    },
+    params: {
+      location: 'The place to look up.',
+    },
+  },
+  {
+    name: 'howMuchPrecipitationThisWeek',
+    description: 'How much precipitation will we get this week?',
+    exec: function(params) {
+      const location = params.location;
+      return new Promise(function(resolve, reject) {
+        getLatLong(location)
+          .then(function(resp: any) {
+            forecast.latitutde(resp.lat).longitude(resp.lng)
+              .get()
+              .then(function(resp) {
+                let precipType = null;
+                const weekPrecip = resp.daily.data.map(function(re) {
+                    // the DarkSky API sometimes returns undefined here .. this is not well documented.
+                    if (re.precipProbability > 0 && typeof re.precipAccumulation != 'undefined') {
+                        precipType = re.precipType;
+                        return re.precipAccumulation;
+                    }
+                    return 0;
+                });
+
+                const sum = weekPrecip.reduce(function(a, b) { return a + b; }, 0);
+                resolve(`${Math.round(sum)} inches of ${precipType} expected in the next week.`);
+              })
+          })
+          .catch(function(err) {
+            console.log(err);
+            reject(err);
+          })
+        });
+    },
+    params: {
+      location: 'The place to look up.',
+    },
+  },
 ];
 
 weather.name = 'Weather';
