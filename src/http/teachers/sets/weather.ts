@@ -159,6 +159,42 @@ weather.teachers = [
       location: 'The place to look up.',
     },
   },
+  {
+    name: 'cloudCover',
+    description: 'Is it cloud today?',
+    exec: function(params) {
+      const location = params.location;
+      return new Promise(function(resolve, reject) {
+        getLatLong(location)
+          .then(function(resp) {
+            forecast.latitutde(resp.lat).longitude(resp.lng)
+              .get()
+              .then(function(resp) {
+                const cloudPercentage = parseFloat(resp.currently.cloudCover) * 100;
+
+                if (cloudPercentage == 0)
+                  resolve(`It's perfectly clear today. No clouds!`);
+                if (cloudPercentage <= 10)
+                  resolve(`The sky's ${cloudPercentage}% clouds, so barely.`);
+                if (cloudPercentage <= 30)
+                  resolve(`The sky's ${cloudPercentage}% clouds, so a bit.`);
+                if (cloudPercentage <= 50)
+                  resolve(`The sky's ${cloudPercentage}% clouds, so a few.`);
+                if (cloudPercentage <= 75)
+                  resolve(`The sky's ${cloudPercentage}% clouds, so quite!`);
+                resolve(`The sky's ${cloudPercentage}% clouds, so very!`);
+              })
+          })
+          .catch(function(err) {
+            console.log(err);
+            reject(err);
+          })
+        });
+    },
+    params: {
+      location: 'The place to look up.',
+    },
+  },
 ];
 
 weather.name = 'Weather';
