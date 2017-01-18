@@ -3,3 +3,4 @@ keys
 build
 node_modules
 *~
+.*.swp
