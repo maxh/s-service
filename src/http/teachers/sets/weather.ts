@@ -1,5 +1,5 @@
-import DarkSky from 'dark-sky';
-import moment from 'moment-timezone';
+import * as DarkSky from 'dark-sky';
+import * as moment from 'moment-timezone';
 import weatherLib from 'weather-js';
 
 import settings from '../../../settings';
@@ -124,7 +124,7 @@ weather.teachers = [
       return new Promise(function(resolve, reject) {
         getLatLong(location)
           .then(function(respLL: any) {
-            forecast.latitutde(respLL.lat).longitude(respLL.lng)
+            forecast.latitude(respLL.lat).longitude(respLL.lng)
               .get()
               .then(function(resp: any) {
                 let currentWind = `The wind is currently ${mphToKnots(resp.currently.windSpeed)}
@@ -168,13 +168,13 @@ weather.teachers = [
   },
   {
     name: 'cloudCover',
-    description: 'Is it cloud today?',
+    description: 'Is it cloudy today?',
     exec: function(params) {
       const location = params.location;
       return new Promise(function(resolve, reject) {
         getLatLong(location)
           .then(function(respLL: any) {
-            forecast.latitutde(respLL.lat).longitude(respLL.lng)
+            forecast.latitude(respLL.lat).longitude(respLL.lng)
               .get()
               .then(function(resp: any) {
                 const cloudPercentage = parseFloat(resp.currently.cloudCover) * 100;
@@ -212,7 +212,7 @@ weather.teachers = [
       return new Promise(function(resolve, reject) {
         getLatLong(location)
           .then(function(respLL: any) {
-            forecast.latitutde(respLL.lat).longitude(respLL.lng)
+            forecast.latitude(respLL.lat).longitude(respLL.lng)
               .get()
               .then(function(resp: any) {
                 const sunset = moment(resp.daily.data[0].sunsetTime * 1000)
@@ -239,7 +239,7 @@ weather.teachers = [
       return new Promise(function(resolve, reject) {
         getLatLong(location)
           .then(function(respLL: any) {
-            forecast.latitutde(respLL.lat).longitude(respLL.lng)
+            forecast.latitude(respLL.lat).longitude(respLL.lng)
               .get()
               .then(function(resp) {
                 const sunrise = moment(resp.daily.data[0].sunriseTime * 1000)
@@ -266,7 +266,7 @@ weather.teachers = [
       return new Promise(function(resolve, reject) {
         getLatLong(location)
           .then(function(respLL: any) {
-            forecast.latitutde(respLL.lat).longitude(respLL.lng)
+            forecast.latitude(respLL.lat).longitude(respLL.lng)
               .get()
               .then(function(resp: any) {
                 let precipType = null;
