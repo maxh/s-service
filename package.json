@@ -6,7 +6,7 @@
     "start": "npm run compile && npm run server",
     "start-dev": "npm run compile-dev && npm run server-dev",
     "build": "npm run lint && npm run compile-dev",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "lint": "tslint -c ./tslint.json './src/**/*.ts' || true",
     "fix-lint": "tslint -c ./tslint.json --fix './src/**/*.ts || true'",
     "compile": "tsc",
@@ -16,6 +16,13 @@
   },
   "author": "",
   "license": "ISC",
+  "jest": {
+    "moduleFileExtensions": ["ts", "js"],
+    "transform": {
+      "\\.ts$": "<rootDir>/preprocessor.js"
+    },
+    "testRegex": "\\.test\\.ts$"
+  },
   "dependencies": {
     "@google-cloud/speech": "^0.5.1",
     "airtable": "^0.4.3",
@@ -51,7 +58,9 @@
     "@types/mongodb": "^2.1.37",
     "@types/mongoose": "^4.7.3",
     "@types/whatwg-fetch": "0.0.33",
+    "jest": "^18.1.0",
     "nodemon": "^1.11.0",
+    "ts-jest": "^18.0.1",
     "tslint-eslint-rules": "^3.2.3",
     "typescript": "^2.1.5"
   }
