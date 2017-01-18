@@ -31,7 +31,6 @@ settings.mongo = {};
 settings.auth = {};
 
 settings.projectId = 'scout-loftboxlabs';
-settings.auth.jwtExpiresInSeconds = 60 * 60 * 5;
 
 const setProd = () => {
   settings.port = process.env.PORT;

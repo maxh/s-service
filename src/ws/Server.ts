@@ -1,10 +1,7 @@
-import * as jwt from 'jsonwebtoken';
-import * as url from 'url';
 import * as WebSocket from 'ws';
 
-import settings from '../settings';
-
 import WebServer from '../http/Server';
+import StreamManager from './StreamManager';
 
 
 let singletonInstance = null;
@@ -25,26 +22,10 @@ class SocketServer {
     if (!httpServer) {
       throw Error('WebServer not listening.');
     }
-    this.server = new WebSocket.Server({
-      server: httpServer
-    });
-    this.server.on('connection', ws => {
-      const location = url.parse(ws.upgradeReq.url, true);
-      const token = location.query.jwt;
-
-      const decodedPromise = new Promise((resolve, reject) => {
-        jwt.verify(token, settings.auth.keys.jwtSecret, (error, decoded) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(decoded);
-          }
-        });
-      });
-
-      decodedPromise.then((decoded: any) => {
-        console.log('Connected with userId: ' + decoded.userId);
-      });
+    this.server = new WebSocket.Server({ server: httpServer });
+    this.server.on('connection', (socket) => {
+      const streamManager = new StreamManager(socket);
+      streamManager.startListening();
     });
   }
 }

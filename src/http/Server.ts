@@ -7,6 +7,7 @@ import * as middleware from './infra/middleware';
 
 import answers from './routes/answers';
 import auth from './routes/auth';
+import context from './routes/context';
 import lessons from './routes/lessons';
 
 
@@ -38,8 +39,9 @@ class WebServer {
     // Create the API, on which all endpoints require a token header.
     const api = express.Router();
     api.use(middleware.requireAuthHeader);
-    api.use('/lessons', lessons);
     api.use('/answers', answers);
+    api.use('/context', context);
+    api.use('/lessons', lessons);
 
     // Register API endpoints.
     this.handler.use('/api', api);

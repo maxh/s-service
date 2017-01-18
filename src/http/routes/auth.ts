@@ -1,11 +1,9 @@
 import * as express from 'express';
-import * as jwt from 'jsonwebtoken';
 
+import { generateJwt } from '../infra/auth';
 import * as googleAuth from '../infra/google-auth';
 import * as middleware from '../infra/middleware';
 import { endpoint } from '../infra/net';
-
-import settings from '../../settings';
 
 import DeviceToken from '../models/DeviceToken';
 import Permission, { Provider } from '../models/Permission';
@@ -14,13 +12,10 @@ import User from '../models/User';
 
 const router = express.Router();
 
+
 router.use('/jwt/fromdevicetoken', middleware.requireAuthHeader);
 router.post('/jwt/fromdevicetoken', endpoint((req, res) => {
-  const value = { userId: req.userId };
-  const token = jwt.sign(value, settings.auth.keys.jwtSecret, {
-    expiresIn: settings.auth.jwtExpiresInSeconds
-  });
-  return { jwt: token };
+  return { jwt: generateJwt(req.userId) };
 }));
 
 
