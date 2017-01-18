@@ -122,45 +122,44 @@ weather.teachers = [
     exec: function(params) {
       const location = params.location;
       return getLatLong(location)
-        .then(function(respLL: any) {
-          forecast.latitude(respLL.lat).longitude(respLL.lng)
-            .get()
-            .then(function(resp: any) {
-              let currentWind = `The wind is currently ${mphToKnots(resp.currently.windSpeed)}
-                knots at ${Math.round(resp.currently.windBearing / 10) * 10} degrees. `;
-              if (resp.currently.windSpeed === 0) {
-                currentWind = `There is no wind currently. `;
-              }
+        .then(function(resp: any) {
+          return forecast.latitude(resp.lat).longitude(resp.lng).get();
+        })
+        .then(function(resp: any) {
+          let currentWind = `The wind is currently ${mphToKnots(resp.currently.windSpeed)}
+            knots at ${Math.round(resp.currently.windBearing / 10) * 10} degrees. `;
+          if (resp.currently.windSpeed === 0) {
+            currentWind = `There is no wind currently. `;
+          }
 
-              const nextDay = resp.hourly.data.slice(0, 24);
-              const windSpeeds = nextDay.map(function(data) {
-                return data.windSpeed;
-              });
+          const hourlyForecasts = resp.hourly.data.slice(0, 24);
+          const windSpeeds = hourlyForecasts.map(function(data) {
+            return data.windSpeed;
+          });
 
-              const maxIdx = windSpeeds.indexOf(Math.max.apply(null, windSpeeds));
-              const minIdx = windSpeeds.indexOf(Math.min.apply(null, windSpeeds));
+          const maxIdx = windSpeeds.indexOf(Math.max.apply(null, windSpeeds));
+          const minIdx = windSpeeds.indexOf(Math.min.apply(null, windSpeeds));
 
-              const max = resp.hourly.data[maxIdx];
-              const min = resp.hourly.data[minIdx];
+          const max = resp.hourly.data[maxIdx];
+          const min = resp.hourly.data[minIdx];
 
-              const maxWindSpeedKnots = mphToKnots(max.windSpeed);
-              const minWindSpeedKnots = mphToKnots(min.windSpeed);
+          const maxWindSpeedKnots = mphToKnots(max.windSpeed);
+          const minWindSpeedKnots = mphToKnots(min.windSpeed);
 
-              const maxTime = moment(max.time * 1000).format('h:mma on MMM D');
-              const minTime = moment(min.time * 1000).format('h:mma on MMM D');
+          const maxTime = moment(max.time * 1000).format('h:mma on MMM D');
+          const minTime = moment(min.time * 1000).format('h:mma on MMM D');
 
-              const maxWind = Math.round(max.windBearing / 10) * 10;
-              const minWind = Math.round(min.windBearing / 10) * 10;
+          const maxWind = Math.round(max.windBearing / 10) * 10;
+          const minWind = Math.round(min.windBearing / 10) * 10;
 
-              const maxSentence = `the most wind will be ${maxWindSpeedKnots}\
-                knots at ${maxWind} degrees at ${maxTime}.`;
-              const minSentence = `The least wind will be ${minWindSpeedKnots}\
-                knots at ${minWind} degrees at ${minTime}. `;
+          const maxSentence = `the most wind will be ${maxWindSpeedKnots}\
+            knots at ${maxWind} degrees at ${maxTime}.`;
+          const minSentence = `The least wind will be ${minWindSpeedKnots}\
+            knots at ${minWind} degrees at ${minTime}.`;
 
-              const sentence = `${currentWind} <br/><br/>
-                In the next 24 hours, ${maxSentence} ${minSentence}`;
-              return sentence;
-            });
+          const fullSentence = `${currentWind} <br/><br/>
+            In the next 24 hours, ${maxSentence} ${minSentence}`;
+          return fullSentence;
         });
     },
     params: {
@@ -173,26 +172,25 @@ weather.teachers = [
     exec: function(params) {
       const location = params.location;
       getLatLong(location)
-        .then(function(respLL: any) {
-          forecast.latitude(respLL.lat).longitude(respLL.lng)
-            .get()
-            .then(function(resp: any) {
-              const cloudPercentage = parseFloat(resp.currently.cloudCover) * 100;
+        .then(function(resp: any) {
+          return forecast.latitude(resp.lat).longitude(resp.lng).get();
+        })
+        .then(function(resp: any) {
+          const cloudPercentage = parseFloat(resp.currently.cloudCover) * 100;
 
-              if (cloudPercentage === 0) {
-                return `It's perfectly clear today. No clouds!`;
-              } else if (cloudPercentage <= 10) {
-                return `The sky's ${cloudPercentage}% clouds, so barely.`;
-              } else if (cloudPercentage <= 30) {
-                return `The sky's ${cloudPercentage}% clouds, so a bit.`;
-              } else if (cloudPercentage <= 50) {
-                return `The sky's ${cloudPercentage}% clouds, so a few.`;
-              } else if (cloudPercentage <= 75) {
-                return `The sky's ${cloudPercentage}% clouds, so quite!`;
-              } else {
-                return `The sky's ${cloudPercentage}% clouds, so very!`;
-              }
-            });
+          if (cloudPercentage === 0) {
+            return `It's perfectly clear today. No clouds!`;
+          } else if (cloudPercentage <= 10) {
+            return `The sky's ${cloudPercentage}% clouds, so barely.`;
+          } else if (cloudPercentage <= 30) {
+            return `The sky's ${cloudPercentage}% clouds, so a bit.`;
+          } else if (cloudPercentage <= 50) {
+            return `The sky's ${cloudPercentage}% clouds, so a few.`;
+          } else if (cloudPercentage <= 75) {
+            return `The sky's ${cloudPercentage}% clouds, so quite!`;
+          } else {
+            return `The sky's ${cloudPercentage}% clouds, so very!`;
+          }
         });
     },
     params: {
@@ -205,15 +203,14 @@ weather.teachers = [
     exec: function(params) {
       const location = params.location;
       getLatLong(location)
-        .then(function(respLL: any) {
-          forecast.latitude(respLL.lat).longitude(respLL.lng)
-            .get()
-            .then(function(resp: any) {
-              const sunset = moment(resp.daily.data[0].sunsetTime * 1000)
-                .tz(resp.timezone)
-                .format('h:mma');
-              return `The sun sets at ${sunset} this evening.`;
-            });
+        .then(function(resp: any) {
+          return forecast.latitude(resp.lat).longitude(resp.lng).get();
+        })
+        .then(function(resp: any) {
+          const sunset = moment(resp.daily.data[0].sunsetTime * 1000)
+            .tz(resp.timezone)
+            .format('h:mma');
+          return `The sun sets at ${sunset} this evening.`;
         });
     },
     params: {
@@ -226,15 +223,14 @@ weather.teachers = [
     exec: function(params) {
       const location = params.location;
       getLatLong(location)
-        .then(function(respLL: any) {
-          forecast.latitude(respLL.lat).longitude(respLL.lng)
-            .get()
-            .then(function(resp) {
-              const sunrise = moment(resp.daily.data[0].sunriseTime * 1000)
-                .tz(resp.timezone)
-                .format('h:mma');
-              return `The sun rose at ${sunrise} this morning.`;
-            });
+        .then(function(resp: any) {
+          return forecast.latitude(resp.lat).longitude(resp.lng).get();
+        })
+        .then(function(resp) {
+          const sunrise = moment(resp.daily.data[0].sunriseTime * 1000)
+            .tz(resp.timezone)
+            .format('h:mma');
+          return `The sun rose at ${sunrise} this morning.`;
         });
     },
     params: {
@@ -247,23 +243,22 @@ weather.teachers = [
     exec: function(params) {
       const location = params.location;
       getLatLong(location)
-        .then(function(respLL: any) {
-          forecast.latitude(respLL.lat).longitude(respLL.lng)
-            .get()
-            .then(function(resp: any) {
-              let precipType = null;
-              const weekPrecip = resp.daily.data.map(function(re) {
-                  // DarkSky API may returns undefined. This is not well documented.
-                if (re.precipProbability > 0 && typeof re.precipAccumulation !== 'undefined') {
-                  precipType = re.precipType;
-                  return re.precipAccumulation;
-                }
-                return 0;
-              });
+        .then(function(resp: any) {
+          return forecast.latitude(resp.lat).longitude(resp.lng).get();
+        })
+        .then(function(resp: any) {
+          let precipType = null;
+          const weekPrecip = resp.daily.data.map(function(re) {
+              // DarkSky API may returns undefined. This is not well documented.
+            if (re.precipProbability > 0 && typeof re.precipAccumulation !== 'undefined') {
+              precipType = re.precipType;
+              return re.precipAccumulation;
+            }
+            return 0;
+          });
 
-              const sum = weekPrecip.reduce(function(a, b) { return a + b; }, 0);
-              return `${Math.round(sum)} inches of ${precipType} expected in the next week.`;
-            });
+          const sum = weekPrecip.reduce(function(a, b) { return a + b; }, 0);
+          return `${Math.round(sum)} inches of ${precipType} expected in the next week.`;
         });
     },
     params: {
