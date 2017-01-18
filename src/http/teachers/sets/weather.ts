@@ -161,9 +161,6 @@ weather.teachers = [
                 In the next 24 hours, ${maxSentence} ${minSentence}`;
               return sentence;
             });
-        })
-        .catch(function(err) {
-          return err;
         });
     },
     params: {
@@ -196,9 +193,6 @@ weather.teachers = [
                 return `The sky's ${cloudPercentage}% clouds, so very!`;
               }
             });
-        })
-        .catch(function(err) {
-          return err;
         });
     },
     params: {
@@ -220,9 +214,6 @@ weather.teachers = [
                 .format('h:mma');
               return `The sun sets at ${sunset} this evening.`;
             });
-        })
-        .catch(function(err) {
-          return err;
         });
     },
     params: {
@@ -244,9 +235,6 @@ weather.teachers = [
                 .format('h:mma');
               return `The sun rose at ${sunrise} this morning.`;
             });
-        })
-        .catch(function(err) {
-          return err;
         });
     },
     params: {
@@ -276,9 +264,6 @@ weather.teachers = [
               const sum = weekPrecip.reduce(function(a, b) { return a + b; }, 0);
               return `${Math.round(sum)} inches of ${precipType} expected in the next week.`;
             });
-        })
-        .catch(function(err) {
-          return err;
         });
     },
     params: {
