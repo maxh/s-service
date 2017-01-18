@@ -39,7 +39,7 @@ enum State {
 /** @enum Socket message types. */
 const MessageType = {
   // From the client.
-  CLIENT_CONFIG: 'CLIENT_CONFIG',
+  CLIENT_SAMPLE_RATE: 'CLIENT_SAMPLE_RATE',
 
   // From the server.
   SERVER_ANSWER: 'SERVER_ANSWER',
@@ -106,7 +106,7 @@ class StreamManager {
 
     const { type, sampleRate } = config;
 
-    if (type !== MessageType.CLIENT_CONFIG || !sampleRate) {
+    if (type !== MessageType.CLIENT_SAMPLE_RATE || !sampleRate) {
       this.close('Invalid config message.');
       return;
     }
@@ -171,7 +171,7 @@ class StreamManager {
     }
   }
 
-  private onTranscriptReceived = (transcript) => {
+  private onTranscriptReceived(transcript) => {
     console.log('Transcript received: ', transcript);
     this.sendOnSocket({ type: MessageType.SERVER_TRANSCRIPT, transcript });
     this.getAnswer(transcript).then((answer) => {
