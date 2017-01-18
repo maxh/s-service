@@ -2,12 +2,17 @@
   "name": "scout-service",
   "version": "0.0.1",
   "description": "",
+  "pre-commit": [
+    "lint-with-error",
+    "compile"
+  ],
   "scripts": {
     "start": "npm run compile && npm run server",
     "start-dev": "npm run compile-dev && npm run server-dev",
     "build": "npm run lint && npm run compile-dev",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "tslint -c ./tslint.json './src/**/*.ts' || true",
+    "lint-with-error": "tslint -c ./tslint.json './src/**/*.ts'",
     "fix-lint": "tslint -c ./tslint.json --fix './src/**/*.ts || true'",
     "compile": "tsc",
     "compile-dev": "tsc || true",
