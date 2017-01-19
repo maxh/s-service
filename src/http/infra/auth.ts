@@ -54,6 +54,7 @@ const parseTokenHeader = (header: string): Promise<ITokenHeader> => {
 export const getUserIdFromAuthHeader = (header) => {
   return parseTokenHeader(header).then(parsed => {
     const { appId, tokenType, tokenString } = parsed;
+    debugger;
     if (appId === 'scout') {
       if (tokenType === 'devicetoken') {
         return DeviceToken.verify(tokenString);
@@ -62,6 +63,6 @@ export const getUserIdFromAuthHeader = (header) => {
         return getUserIdFromJwtPromise(tokenString);
       }
     }
-    throw Error('Invalid token.');
+    throw Error(`Invalid token app ${appId} or type ${tokenType}.`);
   });
 };
