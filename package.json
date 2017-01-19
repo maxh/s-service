@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "npm run compile && npm run server",
-    "start-dev": "npm run compile-dev && npm run server-dev",
+    "start-dev": "npm run compile && npm run server-dev",
     "build": "npm run lint && npm run compile-dev",
     "test": "jest",
     "lint": "tslint -c ./tslint.json './src/**/*.ts' || true",

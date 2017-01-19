@@ -5,7 +5,6 @@ import { createRecognizeStream } from './recognition';
 
 import settings from '../settings';
 
-
 const callApi = (token, resourceName, options = {}) => {
   const url = settings.webServerUrl + '/api/' + resourceName;
 
@@ -15,7 +14,15 @@ const callApi = (token, resourceName, options = {}) => {
   }
   authedOptions.headers.authorization = 'Scout JWT ' + token;
 
-  return fetch(url, options).then((response) => {
+  if (options["body"] && !authedOptions.headers['content-type']) {
+    authedOptions.headers['content-type'] = 'application/json';
+  }
+
+  if (!options["body"]) {
+    authedOptions.headers["content-type"] = "text/plain";
+  }
+
+  return fetch(url, authedOptions).then((response) => {
     if (!response.ok) {
       console.log();
       console.error(`Network request failed!`);
@@ -33,6 +40,7 @@ enum State {
   CREATED,
   CONFIGURING_RECOGNIZE,
   READY,
+  FINDING_ANSWER,
   CLOSED,
 }
 
@@ -40,11 +48,13 @@ enum State {
 const MessageType = {
   // From the client.
   CLIENT_SAMPLE_RATE: 'CLIENT_SAMPLE_RATE',
+  CLIENT_END_OF_SPEECH: 'CLIENT_END_OF_SPEECH',
 
   // From the server.
   SERVER_ANSWER: 'SERVER_ANSWER',
   SERVER_TRANSCRIPT: 'SERVER_TRANSCRIPT',
   SERVER_IS_READY: 'SERVER_IS_READY',
+  SERVER_SPEECH_ENDED: 'SERVER_SPEECH_ENDED',
 };
 
 class StreamManager {
@@ -56,9 +66,6 @@ class StreamManager {
 
   // A promise that resolves to the lessons context for this user.
   private contextPromise: Promise<string>;
-
-  // A buffer to store audio data received before the stream manager is ready.
-  private buffer: ArrayBuffer[];
 
   constructor(socket) {
     this.socket = socket;
@@ -72,8 +79,12 @@ class StreamManager {
     this.socket.on('close', this.close.bind(this, 'Close event handled.'));
     // TODO: Automatically refresh the context if a lesson is added.
     // Note: This promise will be rejected if the HTTP server rejects the JWT.
+
+    /*
     this.contextPromise = callApi(this.token, 'context')
         .catch(this.close.bind(this));
+    */
+    this.contextPromise = null;
   }
 
   private close(error) {
@@ -81,17 +92,22 @@ class StreamManager {
     // See https://tools.ietf.org/html/rfc6455#section-7.4.2
     const DEFAULT_WS_APPLICATION_ERROR_CODE = 4000;
     this.socket.close(DEFAULT_WS_APPLICATION_ERROR_CODE, error);
-    this.recognizeStream.destroy();
+
+    if (this.recognizeStream) {
+      this.recognizeStream.destroy();
+    }
     this.state = State.CLOSED;
   }
 
   // WebSocket handlers.
 
   private onSocketMessage(message) {
-    if (message instanceof ArrayBuffer) {
+    if (message instanceof Buffer) {
       this.onSocketAudio(message);
     } else if (typeof message === 'string') {
       this.onSocketConfig(message);
+    } else {
+      this.socket.close('Socket message has unknown data type');
     }
   }
 
@@ -104,30 +120,45 @@ class StreamManager {
       return;
     }
 
-    const { type, sampleRate } = config;
+    switch (config.type) {
+      case MessageType.CLIENT_SAMPLE_RATE:
+        if (!config.sampleRate) {
+          this.close('Must specify sample rate when setting sample rate');
+          return;
+        }
+        if (this.state == State.CREATED) {
+          this.configureRecognizeStream(config.sampleRate);
+        } else {
+          this.close(`Got sample rate but was in state ${this.state}`);
+        }
+        break;
 
-    if (type !== MessageType.CLIENT_SAMPLE_RATE || !sampleRate) {
-      this.close('Invalid config message.');
-      return;
-    }
+      case MessageType.CLIENT_END_OF_SPEECH:
+        if (this.state === State.READY) {
+          // TODO: do something smart here?
+        } else {
+          this.close('Sent end of speech but not in the ready state');
+        }
+        break;
 
-    if (this.state !== State.CONFIGURING_RECOGNIZE) {
-      this.configureRecognizeStream(sampleRate);
+      default:
+        this.close(`Unknown message type ${config.type}`);
     }
   }
 
-  private onSocketAudio(audioData: ArrayBuffer) {
+  private onSocketAudio(audioData: Buffer) {
     if (this.state === State.READY) {
       this.recognizeStream.write(audioData);
+    } else if (this.state == State.FINDING_ANSWER) {
+      // audio came in after we decided that speech ended. this can
+      // happen because of some latency between client and server
+      // sending the end speech signal
     } else {
-      this.buffer.push(audioData);
+      this.close('Got audio data before ready');
     }
   }
 
   private sendOnSocket(message: Object) {
-    if (this.state === State.CLOSED) {
-      return;
-    }
     this.socket.send(JSON.stringify(message));
   }
 
@@ -135,6 +166,18 @@ class StreamManager {
 
   private configureRecognizeStream(sampleRate) {
     this.state = State.CONFIGURING_RECOGNIZE;
+
+    // TODO put inside context promise
+    this.recognizeStream = createRecognizeStream(sampleRate, []);
+    this.recognizeStream.on('data', this.onRecognizeData.bind(this));
+    this.recognizeStream.on('error', console.error);
+
+    this.state = State.READY;
+
+    this.sendOnSocket({ type: MessageType.SERVER_IS_READY });
+    // TODO /del
+
+    /*
     this.contextPromise.then((context) => {
       this.recognizeStream = createRecognizeStream(sampleRate, context);
       this.recognizeStream.on('data', this.onRecognizeData.bind(this));
@@ -151,39 +194,41 @@ class StreamManager {
 
       this.sendOnSocket({ type: MessageType.SERVER_IS_READY });
     });
+    */
   }
 
-  private onRecognizeData(data) {
-    if (data.results) {
-      for (const result of data.results) {
-        if (result.isFinal) {
-          this.onTranscriptReceived(result.transcript);
-          break;
-        }
-      }
-    }
+  private onTranscriptReceived(transcript) {
+    this.state = State.FINDING_ANSWER;
+    this.sendOnSocket({ type: MessageType.SERVER_SPEECH_ENDED });
 
-    if (data.endpointerType === 'START_OF_SPEECH') {
-      console.log('Speech start.');
-    } else if (data.endpointerType === 'END_OF_AUDIO') {
-      console.log('Speech end.');
-      this.sendOnSocket({ type: 'SPEECH_END' });
-    }
-  }
-
-  private onTranscriptReceived(transcript) => {
-    console.log('Transcript received: ', transcript);
     this.sendOnSocket({ type: MessageType.SERVER_TRANSCRIPT, transcript });
     this.getAnswer(transcript).then((answer) => {
       this.sendOnSocket({ type: MessageType.SERVER_ANSWER, answer });
+      this.state = State.CREATED;
     });
+  }
+
+  private onRecognizeData(data) {
+    console.log(JSON.stringify({msg: data}));
+
+    if (data.endpointerType === 'START_OF_SPEECH') {
+      console.log('Speech start.');
+    } else if (data.endpointerType === 'END_OF_SPEECH') {
+      console.log('Speech end.');
+    }
+
+    if (data.results) {
+      let bestResult = data.results[0];
+      if (bestResult && bestResult.isFinal) {
+        this.onTranscriptReceived(bestResult.transcript);
+      }
+    }
   }
 
   private getAnswer(transcript) {
     return callApi(this.token, 'answers', {
       method: 'POST',
       body: JSON.stringify({ transcript }),
-      headers: { 'Content-Type': 'application/json' },
     });
   }
 }
