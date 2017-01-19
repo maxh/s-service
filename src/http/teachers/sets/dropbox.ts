@@ -8,7 +8,7 @@ const dropbox = {} as ITeacherSet;
 
 const getAuthorizedDropboxSdk = (userId) => {
   return Permission.find(userId, Provider.DROPBOX).then((permission) => {
-    return new DropboxSDK({ accessToken: permission.accessToken });
+    return new DropboxSDK({ accessToken: permission.providerInfo.accessToken });
   });
 };
 
@@ -58,7 +58,7 @@ dropbox.teachers = [
             return Permission.find(userId, Provider.DROPBOX).then((permission) => {
               // This URL pattern isn't officially but appears to work on work / personal accounts.
               // TODO(max): Understand from Erik how this fits into the MongoDB Permission schema.
-              const accountType = 'team' in permission ? 'work' : 'personal';
+              const accountType = 'teamId' in permission.providerInfo ? 'work' : 'personal';
               const encodedPath = encodeURIComponent(file.path_lower);
               const url = `https://dropbox.com/${accountType}${encodedPath}`;
               return `<li><a href="${url}" target="_blank">${file.path_display}</a> folder</li>`;
@@ -98,6 +98,8 @@ dropbox.teachers = [
 ];
 
 dropbox.name = 'Dropbox';
-dropbox.permissions = { dropbox: ['full'] };
+dropbox.requiredPermissions = [{
+  provider: Provider.DROPBOX,
+}];
 
 export default dropbox;

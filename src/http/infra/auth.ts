@@ -1,6 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 
 import settings from '../../settings';
+
 import DeviceToken from '../models/DeviceToken';
 
 
@@ -27,7 +28,7 @@ export const generateJwt = (userId) => {
 };
 
 
-interface ITokenHeader {
+export interface ITokenHeader {
   appId: string;
   tokenType: string;
   tokenString: string;
@@ -58,7 +59,7 @@ export const getUserIdFromAuthHeader = (header) => {
         return DeviceToken.verify(tokenString);
       }
       if (tokenType === 'jwt') {
-        return jwt.getUserIdFromJwtPromise(tokenString);
+        return getUserIdFromJwtPromise(tokenString);
       }
     }
     throw Error('Invalid token.');

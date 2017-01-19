@@ -1,13 +1,14 @@
 import gcal from 'google-calendar';
 import * as moment from 'moment';
-import Permission from '../../models/Permission';
+import * as googleAuth from '../../infra/google-auth';
 import { ITeacherSet } from '../interface';
+import { Provider } from '../../models/Permission';
 
 
 const calendar = {} as ITeacherSet;
 
 const makeCalRequest = (userId, startTime, endTime, calId = 'primary'): Promise<any> => {
-  return Permission.getGoogleTokenForUserId(userId).then((gtoken) => {
+  return googleAuth.getAccessTokenForUserId(userId).then((gtoken) => {
     return new Promise((resolve, reject) => {
       gcal(gtoken).events.list(
         calId, {
@@ -360,8 +361,9 @@ calendar.teachers = [
 ];
 
 calendar.name = 'Calendar';
-calendar.permissions = {
-  google: ['https://www.googleapis.com/auth/calendar'],
-};
+calendar.requiredPermissions = [{
+  provider: Provider.GOOGLE,
+  providerInfo: { scopes: ['https://www.googleapis.com/auth/calendar'] }
+}];
 
 export default calendar;

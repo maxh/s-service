@@ -17,6 +17,7 @@ router.get('/', endpoint((req, res) => {
 }));
 
 router.post('/', endpoint((req, res) => {
+  // TODO: Check permissions for the lesson.
   const { userId } = req;
   const { utterance, fnName, params } = req.body;
   const lessonParams = {

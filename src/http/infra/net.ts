@@ -26,6 +26,9 @@ export const endpoint = (fn) => {
     // Ensure a response is sent.
     promise.then(result => {
       if (!res.headersSent) {
+        if (!result) {
+          result = {};  // Empty response => success!
+        }
         return res.status(200).json(result);
       }
     }).catch(error => {

@@ -1,8 +1,10 @@
 import * as moment from 'moment';
 import Gmail from 'node-gmail-api';
 
-import Permission from '../../models/Permission';
+import * as googleAuth from '../../infra/google-auth';
 import { ITeacherSet } from '../interface';
+import { Provider } from '../../models/Permission';
+
 
 const SEARCH_URL_BASE = 'https://mail.google.com/mail/#search/rfc822msgid:';
 
@@ -12,7 +14,7 @@ const buildSearchUrl = (messageId) => {
 
 const fetchEmails = (user, query, max = 100): Promise<any[]> => {
   return new Promise(function(resolve, reject) {
-    Permission.getGoogleTokenForUserId(user).then((gtoken) => {
+    googleAuth.getAccessTokenForUserId(user).then((gtoken) => {
       const gmail = new Gmail(gtoken);
       const s = gmail.messages(query, { max: max }, { fields: ['snippet'] });
 
@@ -75,7 +77,7 @@ email.teachers = [
     name: 'sayUnreadEmails',
     description: 'We\'ll read you the subject and sender from your unread emails',
     exec: function(params) {
-      return Permission.getGoogleTokenForUserId(params.userId).then((gtoken) => {
+      return googleAuth.getAccessTokenForUserId(params.userId).then((gtoken) => {
         const gmail = new Gmail(gtoken);
         const s = gmail.messages('in:inbox is:unread', { max: 100 }, { fields: ['payload'] });
         const resp = [];
@@ -202,8 +204,9 @@ email.teachers = [
 ];
 
 email.name = 'Email';
-email.permissions =  {
-  google: ['https://www.googleapis.com/auth/gmail.readonly'],
-};
+email.requiredPermissions = [{
+  provider: Provider.GOOGLE,
+  providerInfo: { scopes: ['https://www.googleapis.com/auth/gmail.readonly'] }
+}];
 
 export default email;

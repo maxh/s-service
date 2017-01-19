@@ -7,8 +7,13 @@ export interface ITeacher {
   exec(params: any): any;
 }
 
+export interface IRequiredPermission {
+  provider: string;
+  providerInfo?: any;
+}
+
 export interface ITeacherSet {
   name: string;
   teachers: ITeacher[];
-  permissions?: any;
+  requiredPermissions?: IRequiredPermission[];
 }

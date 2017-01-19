@@ -36,7 +36,7 @@ test('https forced in production', () => {
   let wasNextCalled = false;
   const mockNext = () {
     wasNextCalled = true;
-  }
+  };
 
   middleware.forceHttpsUnlessDev(mockReq, mockRes, mockNext);
   expect(redirectedToPath).toBe('https://bar.com/foo');

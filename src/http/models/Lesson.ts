@@ -39,7 +39,7 @@ const findBestFuzzyMatch = (transcript: string, lessons: Lesson[]): Lesson => {
     const lessonSplit = lesson.utterance.toLowerCase().split(' ');
     const lessonWordSet = arrToObj(lessonSplit);
 
-    // compute the %age words in common
+    // Compute the percentage words in common.
     let commonWords = 0;
     let lessonLen = 0;
 

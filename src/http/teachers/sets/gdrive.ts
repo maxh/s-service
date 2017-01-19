@@ -1,26 +1,31 @@
 import googleDrive from 'google-drive';
 
+import { Provider } from '../../models/Permission';
+
 import { ITeacherSet } from '../interface';
 
-import Permission from '../../models/Permission';
+import * as googleAuth from '../../infra/google-auth';
 
+const callDriveApi = (token, options): Promise<any[]> => {
+  return new Promise(function(resolve, reject) {
+    googleDrive(token).files().list(options, (err, response, body) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      body = JSON.parse(body);
+      if (body.error) {
+        reject(body.error);
+        return;
+      }
+      resolve(body.items);
+    });
+  });
+};
 
 const fetchItems = (userId, options): Promise<any[]> => {
-  return Permission.getGoogleTokenForUserId(userId).then((gtoken) => {
-    return new Promise(function(resolve, reject) {
-      googleDrive(gtoken).files().list(options, (err, response, body) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        body = JSON.parse(body);
-        if (body.error) {
-          reject(body.error);
-          return;
-        }
-        resolve(body.items);
-      });
-    });
+  return googleAuth.getAccessTokenForUserId(userId).then((token) => {
+    return callDriveApi(token, options);
   });
 };
 
@@ -203,8 +208,9 @@ gdrive.teachers = [
 ];
 
 gdrive.name = 'Google Drive';
-gdrive.permissions = {
-  google: ['https://www.googleapis.com/auth/drive.readonly'],
-};
+gdrive.requiredPermissions = [{
+  provider: Provider.GOOGLE,
+  providerInfo: { scopes: ['https://www.googleapis.com/auth/drive.readonly'] }
+}];
 
 export default gdrive;
