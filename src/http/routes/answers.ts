@@ -18,7 +18,10 @@ const NO_LESSON_ID = 0;
 const fetchAnswer = (userId: string, transcript: string): Promise<IAnswer> => {
   return Lesson.findBestMatch(userId, transcript).then((lesson) => {
     if (!lesson) {
-      return { lessonId: NO_LESSON_ID, answerText: 'I don\'t know how to do that. Can you teach me?'}
+      return {
+        lessonId: NO_LESSON_ID,
+        answerText: 'I don\'t know how to do that. Can you teach me?',
+      };
     }
 
     const params = Object.assign({}, lesson.params, { userId });

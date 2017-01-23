@@ -5,7 +5,7 @@ import { createRecognizeStream } from './recognition';
 
 import settings from '../settings';
 
-const callApi = (token, resourceName, options = {}) => {
+const callApi = (token, resourceName, options: any = {}) => {
   const url = settings.httpServerUrl + '/api/' + resourceName;
 
   const authedOptions: any = Object.assign({}, options);
@@ -14,12 +14,12 @@ const callApi = (token, resourceName, options = {}) => {
   }
   authedOptions.headers.authorization = 'Scout JWT ' + token;
 
-  if (options["body"] && !authedOptions.headers['content-type']) {
+  if (options.body && !authedOptions.headers['content-type']) {
     authedOptions.headers['content-type'] = 'application/json';
   }
 
-  if (!options["body"]) {
-    authedOptions.headers["content-type"] = "text/plain";
+  if (!options.body) {
+    authedOptions.headers['content-type'] = 'text/plain';
   }
 
   return fetch(url, authedOptions).then((response) => {
@@ -120,13 +120,14 @@ class StreamManager {
       return;
     }
 
+    /* tslint:disable:ter-indent */
     switch (config.type) {
       case MessageType.CLIENT_SAMPLE_RATE:
         if (!config.sampleRate) {
           this.close('Must specify sample rate when setting sample rate');
           return;
         }
-        if (this.state == State.CREATED) {
+        if (this.state === State.CREATED) {
           this.configureRecognizeStream(config.sampleRate);
         } else {
           this.close(`Got sample rate but was in state ${this.state}`);
@@ -144,12 +145,13 @@ class StreamManager {
       default:
         this.close(`Unknown message type ${config.type}`);
     }
+    /* tslint:enable:ter-indent */
   }
 
   private onSocketAudio(audioData: Buffer) {
     if (this.state === State.READY) {
       this.recognizeStream.write(audioData);
-    } else if (this.state == State.FINDING_ANSWER) {
+    } else if (this.state === State.FINDING_ANSWER) {
       // audio came in after we decided that speech ended. this can
       // happen because of some latency between client and server
       // sending the end speech signal
@@ -209,7 +211,7 @@ class StreamManager {
   }
 
   private onRecognizeData(data) {
-    console.log(JSON.stringify({msg: data}));
+    console.log(JSON.stringify({ msg: data }));
 
     if (data.endpointerType === 'START_OF_SPEECH') {
       console.log('Speech start.');
@@ -218,7 +220,7 @@ class StreamManager {
     }
 
     if (data.results) {
-      let bestResult = data.results[0];
+      const bestResult = data.results[0];
       if (bestResult && bestResult.isFinal) {
         this.onTranscriptReceived(bestResult.transcript);
       }
