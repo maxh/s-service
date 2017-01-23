@@ -85,7 +85,7 @@ router.post('/devicetoken', endpoint((req, res) => {
 
   return (userIdPromise
       .then(userId => DeviceToken.createOrReplace(userId, deviceName))
-      .then(deviceToken => ({ deviceToken }))
+      .then(deviceToken => ({ deviceToken: deviceToken.token }))
       .catch(error => {
         if (error.message === NO_REFRESH_TOKEN) {
           return res.status(400).json({ error: NO_REFRESH_TOKEN });
