@@ -2,27 +2,36 @@
 
 import * as express from 'express';
 
-import * as googleAuth from '../infra/google-auth';
-
-import Permission from '../models/Permission';
+import Permission, { IProviderInfo } from '../models/Permission';
+import * as middleware from '../infra/middleware';
+import { endpoint } from '../infra/net';
 
 const router = express.Router();
 
 
-router.post('/permissions', endpoint((req, res) => {
+// GET is not protected by onlyAcceptRequestsFromScoutWebServer.
+router.get('/', endpoint((req, res) => {
   const { userId } = req;
-  const { provider, providerInfo } = req.body;
-  return Permission.createOrUpgrade({ userId, provider, providerInfo }).then(() => null);
+  return Permission.findAll(userId).then((permissions) => {
+    const granted = {};
+    if (permissions) {
+      permissions.forEach(permission => {
+        granted[permission.provider] = permission.summaryForClient;
+      });
+    }
+    const possible = Permission.allPossible;
+    return { granted, possible };
+  });
 }));
 
 
-router.post('/permissions/google', endpoint((req, res) => {
+router.use('/', middleware.onlyAcceptRequestsFromScoutWebServer);
+router.patch('/', endpoint((req, res) => {
   const { userId } = req;
-  const { googleId, idToken, serverAuthCode, scopes } = req.body.googleUser;
-  return googleAuth.validateIdToken(googleId, idToken).then(() => {
-    return googleAuth.createOrUpgradePermission(userId, googleId, scopes, serverAuthCode);
-  }).then(() => null);
+  const provider = req.body.provider;
+  const providerInfo = req.body.providerInfo as IProviderInfo;
+  return Permission.createOrUpgrade(userId, provider, providerInfo).then(() => null);
 }));
 
 
-default export router;
+export default router;

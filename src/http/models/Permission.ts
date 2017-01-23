@@ -61,6 +61,25 @@ googleSchema.statics.isUpgrade = function(existingInfo, newInfo): boolean {
   const hasNewRefreshToken = Boolean(newInfo.refreshToken);
   return hasNewScopes || hasNewRefreshToken;
 };
+googleSchema.statics.summarizeGranted = (providerInfo): Object => {
+  return {
+    provider: Provider.GOOGLE,
+    scopes: providerInfo.scopes
+  };
+};
+googleSchema.statics.summarizePossible = () => {
+  return {
+    provider: Provider.GOOGLE,
+    scopes: [
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/calendar',
+      'https://www.googleapis.com/auth/drive.readonly',
+      'https://www.googleapis.com/auth/gmail.readonly',
+    ]
+  };
+};
+
 
 // Dropbox.
 const dropboxTypes = {
@@ -72,6 +91,10 @@ const dropboxSchema = new mongoose.Schema(dropboxTypes, options);
 dropboxSchema.statics.isUpgrade = function(existingInfo, newInfo): boolean {
   return true;  // No scopes for Dropbox; always upgrade.
 };
+dropboxSchema.statics.summarizeGranted = (providerInfo) => {
+  return { provider: Provider.DROPBOX };
+};
+dropboxSchema.statics.summarizePossible = () => ({ provider: Provider.DROPBOX });
 
 
 // Mongoose models.
@@ -96,6 +119,16 @@ keysByProvider[Provider.DROPBOX] = Object.keys(dropboxTypes);
 
 class Permission {
 
+  public static get allPossible() {
+    const possibleByProvider = {};
+    Object.keys(Provider).map((providerKey) => {
+      const provider = Provider[providerKey];
+      const possible = Permission.modelsByProvider[provider].summarizePossible();
+      possibleByProvider[provider] = possible;
+    });
+    return possibleByProvider;
+  }
+
   public static createOrUpgrade = function(
       userId: string,
       provider: string,
@@ -115,9 +148,19 @@ class Permission {
 
   public static find = function(userId: string, provider: string): Promise<Permission> {
     const model = Permission.modelsByProvider[provider];
-    return model.findOne({ userId, provider }).then(existingDoc => {
-      if (existingDoc) {
-        return new Permission(existingDoc);
+    return model.findOne({ userId, provider }).then(doc => {
+      if (doc) {
+        return new Permission(doc);
+      } else {
+        return null;
+      }
+    });
+  };
+
+  public static findAll = function(userId: string): Promise<Permission[]> {
+    return baseModel.find({ userId }).then(docs => {
+      if (docs.length) {
+        return docs.map(doc => new Permission(doc));
       } else {
         return null;
       }
@@ -143,6 +186,14 @@ class Permission {
     return this.document.save().then(() => this);
   };
 
+  get userId(): string {
+    return this.document.userId;
+  }
+
+  get provider(): string {
+    return this.document.provider;
+  }
+
   get providerInfo(): IProviderInfo {
     const keys = Permission.keysByProvider[this.document.provider];
     const providerInfo = {};
@@ -152,6 +203,11 @@ class Permission {
     return providerInfo as IProviderInfo;
   }
 
+  get summaryForClient(): Object {
+    const provider = this.document.provider;
+    const model = Permission.modelsByProvider[provider];
+    return model.summarizeGranted(this.providerInfo);
+  }
 }
 
 export default Permission;

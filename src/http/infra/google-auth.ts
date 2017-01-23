@@ -5,19 +5,22 @@ import { fetchJson, urlEncode } from './net';
 
 import settings from '../../settings';
 
-// accessTokenExpiration is in seconds since UNIX epoch.
-export interface ITokenInfo {
+
+export interface IGoogleTokens {
   accessToken: string;
-  accessTokenExpiration: number;
+  accessTokenExpiration: number;  // seconds since UNIX epoch
   refreshToken?: string;
 };
+
 
 const ID_TOKEN_ENDPOINT =
     'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=';
 
+
 const computeExpiration = (secondsFromNow: number) : number => {
   return new Date().getTime() / 1000 + secondsFromNow;
 };
+
 
 export const validateIdToken = (googleId, idToken): Promise<string> => {
   const url = ID_TOKEN_ENDPOINT + idToken;
@@ -30,18 +33,18 @@ export const validateIdToken = (googleId, idToken): Promise<string> => {
   });
 };
 
-export const getTokenInfoFromServerAuthCode = function(
-    scopes: string[],
+
+export const getTokensFromCode = function(
     code: string,
-  ): Promise<ITokenInfo> {
+    redirectUri: string = ''): Promise<IGoogleTokens|null> {
   const tokenUri = 'https://accounts.google.com/o/oauth2/token';
   const postData = {
     client_id: settings.auth.keys.google_clientId,
     client_secret: settings.auth.keys.google_clientSecret,
     code: code,
-    scope: scopes.join(' '),
+    // scope: scopes.join(' '),
     grant_type: 'authorization_code',
-    redirect_uri: ''
+    redirect_uri: redirectUri
   };
   const headers = {
     'content-type': 'application/x-www-form-urlencoded',
@@ -57,22 +60,14 @@ export const getTokenInfoFromServerAuthCode = function(
       accessToken: json.access_token,
       accessTokenExpiration: computeExpiration(json.expires_in),
     };
-  });
-};
-
-export const createOrUpgradePermission = (userId, googleId, scopes, serverAuthCode) => {
-  const tokenInfoPromise = getTokenInfoFromServerAuthCode(scopes, serverAuthCode).catch(error => {
+  }).catch(error => {
     // The serverAuthToken was null or invalid, probably because
     // the user was auto-signed-in on mobile rather than going through
     // the browser "Offline Access" grant flow.
     return null;
   });
-
-  return tokenInfoPromise.then((tokenInfo) => {
-    const googleProviderInfo = Object.assign({}, tokenInfo, { scopes, googleId });
-    return Permission.createOrUpgrade(userId, Provider.GOOGLE, googleProviderInfo);
-  });
 };
+
 
 export const getAccessTokenForUserId = (userId: string): Promise<string> => {
   return Permission.find(userId, Provider.GOOGLE).then((permission) => {
@@ -109,8 +104,8 @@ const refreshAccessToken = (permission: Permission): Promise<Permission> => {
         });
   });
 
-  return promise.then((tokenInfo: ITokenInfo) => {
-    const { accessToken, accessTokenExpiration } = tokenInfo;
+  return promise.then((tokens: IGoogleTokens) => {
+    const { accessToken, accessTokenExpiration } = tokens;
     const newProviderInfo = { scopes, accessToken, accessTokenExpiration };
     return permission.patchProviderInfo(newProviderInfo as IGoogleProviderInfo);
   });

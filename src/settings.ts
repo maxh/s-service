@@ -4,8 +4,8 @@ import * as fs from 'fs';
 export interface ISettings {
   projectId: string;
   port: number;
-  webServerUrl: string;
-  socketServerUrl: string;
+  httpServerUrl: string;
+  wsServerUrl: string;
   auth: {
     jwtExpiresInSeconds: number;
     keys: any;
@@ -34,8 +34,8 @@ settings.projectId = 'scout-loftboxlabs';
 
 const setProd = () => {
   settings.port = process.env.PORT;
-  settings.webServerUrl = 'https://' + process.env.HOSTNAME;
-  settings.socketServerUrl = 'wss://' + process.env.HOSTNAME;
+  settings.httpServerUrl = 'https://' + process.env.HOSTNAME;
+  settings.wsServerUrl = 'wss://' + process.env.HOSTNAME;
   settings.mongo.dbName = 'scout-db-prod';
   settings.mongo.url = PROD_MONGO + '/' + settings.mongoDbName;
   settings.auth.keys = JSON.parse(process.env.AUTH_KEYS);
@@ -44,8 +44,8 @@ const setProd = () => {
 
 const setDev = () => {
   settings.port = 5000;
-  settings.webServerUrl = 'https://localhost:' + settings.port;
-  settings.socketServerUrl = 'wss://localhost:' + settings.port;
+  settings.httpServerUrl = 'https://localhost:' + settings.port;
+  settings.wsServerUrl = 'wss://localhost:' + settings.port;
   settings.mongo.dbName = 'scout-db-local';
   settings.mongo.url = LOCAL_MONGO + '/' + settings.mongo.dbName;
   settings.auth.keys = readFile('./keys/keys.json');

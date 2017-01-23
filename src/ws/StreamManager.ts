@@ -6,7 +6,7 @@ import { createRecognizeStream } from './recognition';
 import settings from '../settings';
 
 const callApi = (token, resourceName, options = {}) => {
-  const url = settings.webServerUrl + '/api/' + resourceName;
+  const url = settings.httpServerUrl + '/api/' + resourceName;
 
   const authedOptions: any = Object.assign({}, options);
   if (!authedOptions.headers) {

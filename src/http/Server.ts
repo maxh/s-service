@@ -9,6 +9,7 @@ import answers from './routes/answers';
 import auth from './routes/auth';
 import context from './routes/context';
 import lessons from './routes/lessons';
+import permissions from './routes/permissions';
 
 
 let singletonInstance = null;
@@ -29,9 +30,11 @@ class WebServer {
     // Log all requests.
     this.handler.use(morgan('combined'));
 
+    this.handler.use(middleware.forceHttpsUnlessDev);
+    this.handler.use(middleware.allowCrossDomain);
+
     // All scout-service requests are JSON, both inbound and outbound.
     this.handler.use(bodyParser.json());
-    this.handler.use(middleware.forceHttpsUnlessDev);
 
     // Register auth endpoints, only some of which require a token header.
     this.handler.use('/auth', auth);
@@ -42,6 +45,7 @@ class WebServer {
     api.use('/answers', answers);
     api.use('/context', context);
     api.use('/lessons', lessons);
+    api.use('/permissions', permissions);
 
     // Register API endpoints.
     this.handler.use('/api', api);
