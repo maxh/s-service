@@ -14,12 +14,10 @@ const callApi = (token, resourceName, options: any = {}) => {
   }
   authedOptions.headers.authorization = 'Scout JWT ' + token;
 
-  if (options.body && !authedOptions.headers['content-type']) {
-    authedOptions.headers['content-type'] = 'application/json';
-  }
-
-  if (!options.body) {
+  if (!authedOptions.body) {
     authedOptions.headers['content-type'] = 'text/plain';
+  } else if (!authedOptions.headers['content-type']) {
+    authedOptions.headers['content-type'] = 'application/json';
   }
 
   return fetch(url, authedOptions).then((response) => {
@@ -49,6 +47,7 @@ const MessageType = {
   // From the client.
   CLIENT_SAMPLE_RATE: 'CLIENT_SAMPLE_RATE',
   CLIENT_END_OF_SPEECH: 'CLIENT_END_OF_SPEECH',
+  CLIENT_TRANSCRIPT: 'CLIENT_TRANSCRIPT', // used mostly for debugging
 
   // From the server.
   SERVER_ANSWER: 'SERVER_ANSWER',
@@ -142,6 +141,10 @@ class StreamManager {
         }
         break;
 
+      case MessageType.CLIENT_TRANSCRIPT:
+        this.onTranscriptReceived(config.transcript);
+        break;
+
       default:
         this.close(`Unknown message type ${config.type}`);
     }
@@ -164,54 +167,54 @@ class StreamManager {
     this.socket.send(JSON.stringify(message));
   }
 
+  private onRecognizeError(error) {
+    // keep this empty for now, since we pick up the err message
+    // w/ more context when there's an error
+  }
+
   // Google Speech Recognition API handlers.
 
   private configureRecognizeStream(sampleRate) {
     this.state = State.CONFIGURING_RECOGNIZE;
 
-    // TODO put inside context promise
     this.recognizeStream = createRecognizeStream(sampleRate, []);
     this.recognizeStream.on('data', this.onRecognizeData.bind(this));
-    this.recognizeStream.on('error', console.error);
+    this.recognizeStream.on('error', this.onRecognizeError.bind(this));
 
     this.state = State.READY;
 
     this.sendOnSocket({ type: MessageType.SERVER_IS_READY });
-    // TODO /del
-
-    /*
-    this.contextPromise.then((context) => {
-      this.recognizeStream = createRecognizeStream(sampleRate, context);
-      this.recognizeStream.on('data', this.onRecognizeData.bind(this));
-      this.recognizeStream.on('error', console.error);
-
-      // TODO: Remove server-side buffering once client does buffering.
-      this.state = State.READY;
-
-      // Flush the buffer.
-      this.buffer.forEach(audioData => {
-        this.recognizeStream.write(audioData);
-      });
-      this.buffer = [];
-
-      this.sendOnSocket({ type: MessageType.SERVER_IS_READY });
-    });
-    */
   }
 
   private onTranscriptReceived(transcript) {
     this.state = State.FINDING_ANSWER;
-    this.sendOnSocket({ type: MessageType.SERVER_SPEECH_ENDED });
 
+    if (this.recognizeStream) {
+      this.recognizeStream.destroy();
+      this.recognizeStream = null;
+    }
+
+    this.sendOnSocket({ type: MessageType.SERVER_SPEECH_ENDED });
     this.sendOnSocket({ type: MessageType.SERVER_TRANSCRIPT, transcript });
     this.getAnswer(transcript).then((answer) => {
-      this.sendOnSocket({ type: MessageType.SERVER_ANSWER, answer });
+      this.sendOnSocket({
+        type: MessageType.SERVER_ANSWER,
+        answerText: answer.answerText,
+        lessonId: answer.lessonId,
+      });
       this.state = State.CREATED;
+    }).catch((error) => {
+      this.close(`Error getting answer: ${error}`);
     });
   }
 
   private onRecognizeData(data) {
     console.log(JSON.stringify({ msg: data }));
+
+    if (data.error) {
+      this.close(data.error.message);
+      return;
+    }
 
     if (data.endpointerType === 'START_OF_SPEECH') {
       console.log('Speech start.');

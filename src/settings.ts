@@ -44,8 +44,8 @@ const setProd = () => {
 
 const setDev = () => {
   settings.port = 5000;
-  settings.httpServerUrl = 'https://localhost:' + settings.port;
-  settings.wsServerUrl = 'wss://localhost:' + settings.port;
+  settings.webServerUrl = 'http://localhost:' + settings.port;
+  settings.socketServerUrl = 'wss://localhost:' + settings.port;
   settings.mongo.dbName = 'scout-db-local';
   settings.mongo.url = LOCAL_MONGO + '/' + settings.mongo.dbName;
   settings.auth.keys = readFile('./keys/keys.json');

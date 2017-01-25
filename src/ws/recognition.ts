@@ -17,6 +17,7 @@ export const createRecognizeStream = (sampleRate, context) => {
   const options: any = Object.assign({}, STANDARD_OPTIONS);
   options.sampleRate = sampleRate;
   options.speechContext = { phrases: context };
+  console.log(`Creating stream with sample rate ${options.sampleRate}`);
   return speechClient.createRecognizeStream({
     config: options,
     verbose: true,

@@ -33,7 +33,6 @@ const fetchAnswer = (userId: string, transcript: string): Promise<IAnswer> => {
       }
       return { lessonId: lesson.id, answerText: answer };
     });
-
   }).catch((error) => {
     console.error(error);
     return { lessonId: NO_LESSON_ID, answerText: ERROR_TEXT };
@@ -45,6 +44,7 @@ const router = express.Router();
 router.post('/', endpoint((req, res): Promise<IAnswer> => {
   const { userId } = req;
   const { transcript } = req.body;
+
   return fetchAnswer(userId, transcript).then((answer) => {
     const params = Object.assign({}, answer, { userId, transcript });
     return Transcript.log(params).then(() => answer);
