@@ -173,8 +173,8 @@ class StreamManager {
 
     this.queryManagerPromise
         .then(queryManager => queryManager.getAnswer(transcript))
-        .then((answerText) => {
-          this.sendOnSocket({ type: MessageType.SERVER_ANSWER, answerText });
+        .then((answer) => {
+          this.sendOnSocket({ type: MessageType.SERVER_ANSWER, answer });
           this.state = State.AWAITING_SAMPLE_RATE;
         })
         .catch((error) => {
