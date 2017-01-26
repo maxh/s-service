@@ -1,6 +1,6 @@
 import DropboxSDK from 'dropbox';
 
-import Permission, { Provider } from '../../models/Permission';
+import Permission, { Provider } from '../../../models/Permission';
 import { ITeacherSet } from '../interface';
 
 

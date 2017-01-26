@@ -1,10 +1,10 @@
 import googleDrive from 'google-drive';
 
-import { Provider } from '../../models/Permission';
+import { Provider } from '../../../models/Permission';
 
 import { ITeacherSet } from '../interface';
 
-import * as googleAuth from '../../infra/google-auth';
+import * as googleAuth from '../../../infra/google-auth';
 
 const callDriveApi = (token, options): Promise<any[]> => {
   return new Promise(function(resolve, reject) {

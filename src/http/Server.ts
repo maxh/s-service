@@ -3,14 +3,13 @@ import * as express from 'express';
 import * as http from 'http';
 import * as morgan from 'morgan';
 
-import * as middleware from './infra/middleware';
+import * as middleware from './middleware';
 
-import answers from './routes/answers';
 import auth from './routes/auth';
 import context from './routes/context';
 import lessons from './routes/lessons';
 import permissions from './routes/permissions';
-
+import queryHook from './routes/query-hook';
 
 let singletonInstance = null;
 
@@ -42,13 +41,14 @@ class WebServer {
     // Create the API, on which all endpoints require a token header.
     const api = express.Router();
     api.use(middleware.requireAuthHeader);
-    api.use('/answers', answers);
     api.use('/context', context);
     api.use('/lessons', lessons);
     api.use('/permissions', permissions);
 
     // Register API endpoints.
     this.handler.use('/api', api);
+
+    this.handler.use('/query-hook', queryHook);
   }
 
   public listen(port: number): Promise<undefined> {

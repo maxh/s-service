@@ -1,8 +1,8 @@
 import * as express from 'express';
 
-import Lesson from '../models/Lesson';
+import Lesson from '../../models/Lesson';
 
-import { endpoint } from '../infra/net';
+import { endpoint } from '../../infra/net';
 
 
 const STRIP_CHAR = '?';

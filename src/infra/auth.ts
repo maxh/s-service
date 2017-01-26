@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 
-import settings from '../../settings';
+import settings from '../settings';
 
 import DeviceToken from '../models/DeviceToken';
 

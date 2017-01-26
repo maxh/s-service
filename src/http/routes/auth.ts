@@ -2,14 +2,15 @@
 
 import * as express from 'express';
 
-import { generateJwt } from '../infra/auth';
-import * as googleAuth from '../infra/google-auth';
-import * as middleware from '../infra/middleware';
-import { endpoint } from '../infra/net';
+import * as middleware from '../middleware';
 
-import Permission, { IGoogleProviderInfo, Provider } from '../models/Permission';
-import DeviceToken from '../models/DeviceToken';
-import User from '../models/User';
+import { generateJwt } from '../../infra/auth';
+import * as googleAuth from '../../infra/google-auth';
+import { endpoint } from '../../infra/net';
+
+import Permission, { IGoogleProviderInfo, Provider } from '../../models/Permission';
+import DeviceToken from '../../models/DeviceToken';
+import User from '../../models/User';
 
 
 const ensureUserAndPermission = function(

@@ -1,4 +1,4 @@
-import { getDistance } from '../../infra/geo';
+import { getDistance } from '../../../infra/geo';
 import { ITeacherSet } from '../interface';
 
 

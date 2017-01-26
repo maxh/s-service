@@ -4,7 +4,7 @@ import momentTimezone from 'moment-timezone';
 import timezoner from 'timezoner';
 
 import settings from '../../../settings';
-import { getLatLong } from '../../infra/geo';
+import { getLatLong } from '../../../infra/geo';
 import { ITeacherSet } from '../interface';
 
 

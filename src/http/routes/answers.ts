@@ -1,8 +1,8 @@
 import * as express from 'express';
 
-import { endpoint } from '../infra/net';
-import Lesson from '../models/Lesson';
-import Transcript from '../models/Transcript';
+import { endpoint } from '../../infra/net';
+import Lesson from '../../models/Lesson';
+import Transcript from '../../models/Transcript';
 import { teachersByName } from '../teachers/index';
 
 

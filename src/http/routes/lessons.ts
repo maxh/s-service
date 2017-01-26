@@ -1,7 +1,7 @@
 import * as express from 'express';
 
-import Lesson from '../models/Lesson';
-import { endpoint } from '../infra/net';
+import Lesson from '../../models/Lesson';
+import { endpoint } from '../../infra/net';
 
 
 const router = express.Router();

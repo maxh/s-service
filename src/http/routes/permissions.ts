@@ -2,9 +2,9 @@
 
 import * as express from 'express';
 
-import Permission, { IProviderInfo } from '../models/Permission';
-import * as middleware from '../infra/middleware';
-import { endpoint } from '../infra/net';
+import Permission, { IProviderInfo } from '../../models/Permission';
+import * as middleware from '../middleware';
+import { endpoint } from '../../infra/net';
 
 const router = express.Router();
 

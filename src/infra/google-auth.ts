@@ -1,9 +1,7 @@
-import * as refresh from 'passport-oauth2-refresh';
-
 import Permission, { IGoogleProviderInfo, Provider } from '../models/Permission';
 import { fetchJson, urlEncode } from './net';
 
-import settings from '../../settings';
+import settings from '../settings';
 
 
 export interface IGoogleTokens {
@@ -89,24 +87,29 @@ export const getAccessTokenForUserId = (userId: string): Promise<string> => {
 
 
 const refreshAccessToken = (permission: Permission): Promise<Permission> => {
-  const { scopes, refreshToken } = permission.providerInfo as IGoogleProviderInfo;
+  const { refreshToken } = permission.providerInfo as IGoogleProviderInfo;
 
-  const promise = new Promise((resolve, reject) => {
-    refresh.requestNewAccessToken('google', refreshToken,
-        (error, newAccessToken, newRefreshToken, params) => {
-          if (error) {
-            reject(error);
-            return;
-          }
-          const accessToken = newAccessToken;
-          const accessTokenExpiration = computeExpiration(params.expires_in);
-          resolve({ accessToken, accessTokenExpiration });
-        });
-  });
+  const tokenUri = 'https://accounts.google.com/o/oauth2/token';
+  const postData = {
+    client_id: settings.auth.keys.google_clientId,
+    client_secret: settings.auth.keys.google_clientSecret,
+    refresh_token: refreshToken,
+    grant_type: 'refresh_token',
+  };
+  const headers = {
+    'content-type': 'application/x-www-form-urlencoded',
+  };
+  const options = {
+    method: 'POST',
+    body: urlEncode(postData),
+    headers: headers,
+  };
 
-  return promise.then((tokens: IGoogleTokens) => {
-    const { accessToken, accessTokenExpiration } = tokens;
-    const newProviderInfo = { scopes, accessToken, accessTokenExpiration };
-    return permission.patchProviderInfo(newProviderInfo as IGoogleProviderInfo);
+  return fetchJson(tokenUri, options).then(json => {
+    const tokens = {
+      accessToken: json.access_token,
+      accessTokenExpiration: computeExpiration(json.expires_in),
+    };
+    return permission.patchProviderInfo(tokens as IGoogleProviderInfo);
   });
 };

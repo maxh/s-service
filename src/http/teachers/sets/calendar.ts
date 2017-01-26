@@ -1,8 +1,8 @@
-import gcal from 'google-calendar';
+import * as gcal from 'google-calendar';
 import * as moment from 'moment';
-import * as googleAuth from '../../infra/google-auth';
+import * as googleAuth from '../../../infra/google-auth';
 import { ITeacherSet } from '../interface';
-import { Provider } from '../../models/Permission';
+import { Provider } from '../../../models/Permission';
 
 
 const calendar = {} as ITeacherSet;
@@ -73,7 +73,7 @@ calendar.teachers = [
         const today = new Date();
         const nextWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
 
-        makeCalRequest(params.user, today, nextWeek)
+        makeCalRequest(params.userId, today, nextWeek)
           .then(function(data) {
             const event = data.items[0];
 
@@ -103,7 +103,7 @@ calendar.teachers = [
         const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         tomorrow.setHours(23, 59, 59, 99);
 
-        makeCalRequest(params.user, today, tomorrow)
+        makeCalRequest(params.userId, today, tomorrow)
           .then(function(data) {
             if (data.items.length === 0) {
               return resolve('You have nothing on your calendar!');
@@ -132,7 +132,7 @@ calendar.teachers = [
         const laterToday = new Date();
         laterToday.setHours(23, 59, 59, 99);
 
-        makeCalRequest(params.user, today, laterToday)
+        makeCalRequest(params.userId, today, laterToday)
           .then(function(data) {
             if (data.items.length === 0) {
               return resolve('You have nothing on your calendar!');
@@ -164,7 +164,7 @@ calendar.teachers = [
         const tomorrowEve = new Date(tomorrow);
         tomorrowEve.setHours(23, 59, 59, 99);
 
-        makeCalRequest(params.user, tomorrow, tomorrowEve)
+        makeCalRequest(params.userId, tomorrow, tomorrowEve)
           .then(function(data) {
             if (data.items.length === 0) {
               return resolve('You have nothing on your calendar!');
@@ -196,7 +196,7 @@ calendar.teachers = [
         const tomorrowEve = new Date(tomorrow);
         tomorrowEve.setHours(23, 59, 59, 99);
 
-        makeCalRequest(params.user, tomorrow, tomorrowEve)
+        makeCalRequest(params.userId, tomorrow, tomorrowEve)
           .then(function(data) {
             const meetings = data.items.length === 1 ? 'meeting' : 'meetings';
             const sentence = `You have ${data.items.length} ${meetings} tomorrow.`;
@@ -217,7 +217,7 @@ calendar.teachers = [
         const now = new Date();
         const next = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
 
-        makeCalRequest(params.user, now, next)
+        makeCalRequest(params.userId, now, next)
           .then(function(data) {
             if (!data.items || !data.items[0]) {
               resolve('I couldn\'t find a \'next meeting\' on your calendar.');
@@ -242,7 +242,7 @@ calendar.teachers = [
         const now = new Date();
         const next = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
 
-        makeCalRequest(params.user, now, next, calId).then(function(data) {
+        makeCalRequest(params.userId, now, next, calId).then(function(data) {
           const event = data.items[0];
           if (event && moment(new Date()).isBetween(event.start.dateTime, event.end.dateTime)) {
             resolve(formatEventString(event));
@@ -270,7 +270,7 @@ calendar.teachers = [
         const now = new Date();
         const next = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate());
 
-        makeCalRequest(params.user, now, next, calId).then(function(data) {
+        makeCalRequest(params.userId, now, next, calId).then(function(data) {
           const matches = data.items.filter(function(event) {
             return event.summary.indexOf(query) !== -1;
           });
@@ -310,7 +310,7 @@ calendar.teachers = [
             new Date().getDate() + 1);
         const next = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
 
-        makeCalRequest(params.user, now, next, calId).then(function(data) {
+        makeCalRequest(params.userId, now, next, calId).then(function(data) {
 
           const days = [];
           let currMoment = moment(now).hour(startRange).minutes(0);

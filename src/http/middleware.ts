@@ -1,8 +1,8 @@
 // Custom Express middleware.
 
-import { getUserIdFromAuthHeader } from './auth';
+import { getUserIdFromAuthHeader } from '../infra/auth';
 
-import settings from '../../settings';
+import settings from '../settings';
 
 
 export const requireAuthHeader = (req, res, next) => {

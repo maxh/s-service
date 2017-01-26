@@ -1,9 +1,9 @@
 import * as moment from 'moment';
 import Gmail from 'node-gmail-api';
 
-import * as googleAuth from '../../infra/google-auth';
+import * as googleAuth from '../../../infra/google-auth';
 import { ITeacherSet } from '../interface';
-import { Provider } from '../../models/Permission';
+import { Provider } from '../../../models/Permission';
 
 
 const SEARCH_URL_BASE = 'https://mail.google.com/mail/#search/rfc822msgid:';

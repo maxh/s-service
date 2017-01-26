@@ -10,7 +10,7 @@ browser.teachers = [
     exec: function(params) {
       return new Promise(function(resolve, reject) {
         // TODO: check if it's a link
-        const htmlLink = `<a href='${params.link}' target='_blank'>${params.link}</a>`;
+        const htmlLink = `<a href="${params.link}" target="_blank">${params.link}</a>`;
         resolve(htmlLink);
       });
     },

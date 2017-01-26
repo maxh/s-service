@@ -1,9 +1,7 @@
-import * as fs from 'fs';
-
 import { ITeacherSet } from '../interface';
 
-
-const PERIODIC_TABLE_PATH = '../data/periodicTable.json';
+// tslint:disable:next-line no-var-requires
+const PERIODIC_TABLE = require(process.cwd() + '/data/periodicTable.json');
 
 const chemistry = {} as ITeacherSet;
 
@@ -11,23 +9,8 @@ const chemistry = {} as ITeacherSet;
 const FIELDS = ['name','appearance','atomic_mass','boil','category','color','density','discovered_by','melt','molar_heat','named_by','number','period','phase','source','spectral_img','summary','symbol','xpos','ypos'];
 /* tslint:enable */
 
-let cachedPeriodicTable = null;
-
-const loadPeriodicTable = () => {
-  return new Promise((resolve, reject) => {
-    if (cachedPeriodicTable) {
-      resolve(cachedPeriodicTable);
-      return;
-    }
-    fs.readFile(PERIODIC_TABLE_PATH, (error, data) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-      cachedPeriodicTable = data;
-      resolve(data);
-    });
-  });
+const loadPeriodicTable = function() {
+  return Promise.resolve(PERIODIC_TABLE);
 };
 
 const fetchInfo = (field, params) => {

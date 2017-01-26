@@ -1,47 +1,22 @@
-import * as fetch from 'isomorphic-fetch';
 import * as url from 'url';
 
+import QueryManager from './QueryManager';
 import { createRecognizeStream } from './recognition';
+
+import { getUserIdFromJwtPromise } from '../infra/auth';
 
 import settings from '../settings';
 
-const callApi = (token, resourceName, options: any = {}) => {
-  const url = settings.httpServerUrl + '/api/' + resourceName;
-
-  const authedOptions: any = Object.assign({}, options);
-  if (!authedOptions.headers) {
-    authedOptions.headers = {};
-  }
-  authedOptions.headers.authorization = 'Scout JWT ' + token;
-
-  if (!authedOptions.body) {
-    authedOptions.headers['content-type'] = 'text/plain';
-  } else if (!authedOptions.headers['content-type']) {
-    authedOptions.headers['content-type'] = 'application/json';
-  }
-
-  return fetch(url, authedOptions).then((response) => {
-    if (!response.ok) {
-      console.log();
-      console.error(`Network request failed!`);
-      console.error(`URL: ${url}`);
-      console.error(`Options: ${JSON.stringify(options)}`);
-      console.error(`Status code: ${response.status}`);
-      console.error(`Status text: ${response.statusText}`);
-      console.log();
-    }
-    return response.json();
-  });
-};
 
 enum State {
-  CREATED,
+  AWAITING_SAMPLE_RATE,
   CONFIGURING_RECOGNIZE,
   READY,
   FINDING_ANSWER,
   CLOSED,
 }
 
+// TODO: Add CLIENT_LOCATION, with lat/lon and timezone, to send to api.ai.
 /** @enum Socket message types. */
 const MessageType = {
   // From the client.
@@ -56,34 +31,30 @@ const MessageType = {
   SERVER_SPEECH_ENDED: 'SERVER_SPEECH_ENDED',
 };
 
+
 class StreamManager {
 
   private socket: any;
   private recognizeStream: any;
   private token: string;
   private state: State;
-
-  // A promise that resolves to the lessons context for this user.
-  private contextPromise: Promise<string>;
+  private queryManagerPromise: Promise<QueryManager>;
 
   constructor(socket) {
     this.socket = socket;
     const location = url.parse(socket.upgradeReq.url, true);
     this.token = location.query.jwt;
-    this.state = State.CREATED;
+    this.state = State.AWAITING_SAMPLE_RATE;
   }
 
   public startListening() {
+    // TODO(max): Support different access tokens.
+    const agentAccessToken = settings.auth.keys.acornApiAiAgentAccessToken;
+    this.queryManagerPromise = getUserIdFromJwtPromise(this.token)
+        .then(userId => new QueryManager(agentAccessToken, userId))
+        .catch(e => this.close('Invalid token.'));
     this.socket.on('message', this.onSocketMessage.bind(this));
     this.socket.on('close', this.close.bind(this, 'Close event handled.'));
-    // TODO: Automatically refresh the context if a lesson is added.
-    // Note: This promise will be rejected if the HTTP server rejects the JWT.
-
-    /*
-    this.contextPromise = callApi(this.token, 'context')
-        .catch(this.close.bind(this));
-    */
-    this.contextPromise = null;
   }
 
   private close(error) {
@@ -126,7 +97,7 @@ class StreamManager {
           this.close('Must specify sample rate when setting sample rate');
           return;
         }
-        if (this.state === State.CREATED) {
+        if (this.state === State.AWAITING_SAMPLE_RATE) {
           this.configureRecognizeStream(config.sampleRate);
         } else {
           this.close(`Got sample rate but was in state ${this.state}`);
@@ -177,13 +148,16 @@ class StreamManager {
   private configureRecognizeStream(sampleRate) {
     this.state = State.CONFIGURING_RECOGNIZE;
 
-    this.recognizeStream = createRecognizeStream(sampleRate, []);
-    this.recognizeStream.on('data', this.onRecognizeData.bind(this));
-    this.recognizeStream.on('error', this.onRecognizeError.bind(this));
+    this.queryManagerPromise.then(queryManager => {
+      return queryManager.getSpeechContextPromise();
+    }).then(context => {
+      this.recognizeStream = createRecognizeStream(sampleRate, context);
+      this.recognizeStream.on('data', this.onRecognizeData.bind(this));
+      this.recognizeStream.on('error', this.onRecognizeError.bind(this));
+      this.state = State.READY;
+      this.sendOnSocket({ type: MessageType.SERVER_IS_READY });
+    });
 
-    this.state = State.READY;
-
-    this.sendOnSocket({ type: MessageType.SERVER_IS_READY });
   }
 
   private onTranscriptReceived(transcript) {
@@ -196,16 +170,16 @@ class StreamManager {
 
     this.sendOnSocket({ type: MessageType.SERVER_SPEECH_ENDED });
     this.sendOnSocket({ type: MessageType.SERVER_TRANSCRIPT, transcript });
-    this.getAnswer(transcript).then((answer) => {
-      this.sendOnSocket({
-        type: MessageType.SERVER_ANSWER,
-        answerText: answer.answerText,
-        lessonId: answer.lessonId,
-      });
-      this.state = State.CREATED;
-    }).catch((error) => {
-      this.close(`Error getting answer: ${error}`);
-    });
+
+    this.queryManagerPromise
+        .then(queryManager => queryManager.getAnswer(transcript))
+        .then((answerText) => {
+          this.sendOnSocket({ type: MessageType.SERVER_ANSWER, answerText });
+          this.state = State.AWAITING_SAMPLE_RATE;
+        })
+        .catch((error) => {
+          this.close(`Error getting answer: ${error}`);
+        });
   }
 
   private onRecognizeData(data) {
@@ -228,13 +202,6 @@ class StreamManager {
         this.onTranscriptReceived(bestResult.transcript);
       }
     }
-  }
-
-  private getAnswer(transcript) {
-    return callApi(this.token, 'answers', {
-      method: 'POST',
-      body: JSON.stringify({ transcript }),
-    });
   }
 }
 

@@ -35,6 +35,17 @@ class User {
     });
   }
 
+  public static find(userId: string): Promise<User> {
+    const query = { _id: userId };
+    return model.findOne(query).then(doc => {
+      if (doc) {
+        return new User(doc);
+      } else {
+        throw Error('No user with that ID was found!');
+      }
+    });
+  }
+
   private document: IUser & mongoose.Document;
 
   constructor(document) {

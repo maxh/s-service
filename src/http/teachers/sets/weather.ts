@@ -3,7 +3,7 @@ import * as moment from 'moment-timezone';
 import weatherLib from 'weather-js';
 
 import settings from '../../../settings';
-import { getLatLong } from '../../infra/geo';
+import { getLatLong } from '../../../infra/geo';
 import { ITeacherSet } from '../interface';
 
 const forecast = new DarkSky(settings.auth.keys.dark_sky);

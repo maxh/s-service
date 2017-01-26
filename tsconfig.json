@@ -8,6 +8,7 @@
     "sourceMap": true,
     "noUnusedLocals": true,
     "lib": ["es6"],
+    "module": "commonjs",
     "skipLibCheck": true,
     "types": ["node"]
   },
