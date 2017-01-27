@@ -5,6 +5,8 @@ import { endpoint } from '../../infra/net';
 import { teachersByName } from '../teachers/index';
 
 
+export const SCOUT_WEB_HOOK_SOURCE = 'scout-web-hook';
+
 const router = express.Router();
 
 router.post('/', endpoint((req, res) => {
@@ -33,9 +35,9 @@ router.post('/', endpoint((req, res) => {
   return answerPromise
       .then(answer => {
         return {
-          speech: JSON.stringify(answer),
-          displayText: 'foo',
-          source: 'scout-web-hook'
+          speech: JSON.stringify(answer),  // Serialized IAnswer.
+          displayText: '__unused__',
+          source: SCOUT_WEB_HOOK_SOURCE,
         };
       })
       .catch(err => {

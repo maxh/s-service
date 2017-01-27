@@ -1,62 +1,115 @@
 {
-  "freezingMedia" :
-  {
-    "protocolId" : "freezingMedia",
-    "link" : "http://thelabrat.com/protocols/freezingmedia.shtml"
-  },
-  "antibiotics" :
-  {
-    "protocolId" : "antibiotics",
-    "link" : "http://thelabrat.com/protocols/antibiotics.shtml"
-  },
-  "recoveringFrozenCells" :
-  {
-    "protocolId" : "recoveringFrozenCells",
-    "link" : "http://thelabrat.com/protocols/recoverfrozen.shtml"
-  },
-  "cryopreservationSerum" :
-  {
-    "protocolId" : "cryopreservationSerum",
-    "link" : "http://thelabrat.com/protocols/freeze-serum.shtml"
-  },
-  "cryopreservationSerumFree" :
-  {
-    "protocolId" : "cryopreservationSerumFree",
-    "link" : "http://thelabrat.com/protocols/freeze-noserum.shtml"
-  },
-  "thawingSerum" :
-  {
-    "protocolId" : "thawingSerum",
-    "link" : "http://thelabrat.com/protocols/serumthaw.shtml"
-  },
-  "pbs10x" :
-  {
-    "protocolId" : "pbs10x",
-    "link" : "http://thelabrat.com/protocols/4.shtml"
-  },
-  "pbs1x" :
-  {
-    "protocolId" : "pbs1x",
-    "link" : "http://thelabrat.com/protocols/3.shtml"
-  },
-  "tes" :
-  {
-    "protocolId" : "tes",
-    "link" : "http://thelabrat.com/protocols/TES.shtml"
-  },
-  "preparingAnAsepticEnvironment" :
-  {
-    "protocolId" : "preparingAnAsepticEnvironment",
-    "link" : "http://www.abcam.com/protocols/mammalian-cell-tissue-culture-techniques-protocol"
-  },
-  "preparationOfCellGrowthMedium" :
-  {
-    "protocolId" : "preparationOfCellGrowthMedium",
-    "link" : "http://www.abcam.com/protocols/mammalian-cell-tissue-culture-techniques-protocol"
-  },
   "example" :
   {
     "protocolId" : "example",
     "link" : "https://docs.google.com/document/d/1lraQ0aJKZy53z7WKaybbOJagNCIU-M8JET1KRY8EgP0/edit"
+  },
+  "freezingMedia" : {
+     "protocolId":"freezingMedia",
+    "link":"http://thelabrat.com/protocols/freezingmedia.shtml"
+  },
+  "antibiotics" : {
+     "protocolId":"antibiotics",
+    "link":"http://thelabrat.com/protocols/antibiotics.shtml"
+  },
+  "recoveringFrozenCells" : {
+     "protocolId":"recoveringFrozenCells",
+    "link":"http://thelabrat.com/protocols/recoverfrozen.shtml"
+  },
+  "cryopreservationSerum" : {
+     "protocolId":"cryopreservationSerum",
+    "link":"http://thelabrat.com/protocols/freeze-serum.shtml"
+  },
+  "cryopreservationSerumFree" : {
+     "protocolId":"cryopreservationSerumFree",
+    "link":"http://thelabrat.com/protocols/freeze-noserum.shtml"
+  },
+  "thawingSerum" : {
+     "protocolId":"thawingSerum",
+    "link":"http://thelabrat.com/protocols/serumthaw.shtml"
+  },
+  "pbs10x" : {
+     "protocolId":"pbs10x",
+    "link":"http://thelabrat.com/protocols/4.shtml"
+  },
+  "pbs1x" : {
+     "protocolId":"pbs1x",
+    "link":"http://thelabrat.com/protocols/3.shtml"
+  },
+  "tes" : {
+     "protocolId":"tes",
+    "link":"http://thelabrat.com/protocols/TES.shtml"
+  },
+  "preparingAnAsepticEnvironment" : {
+     "protocolId":"preparingAnAsepticEnvironment",
+    "link":"http://www.abcam.com/protocols/mammalian-cell-tissue-culture-techniques-protocol"
+  },
+  "preparationOfCellGrowthMedium" : {
+     "protocolId":"preparationOfCellGrowthMedium",
+    "link":"http://www.abcam.com/protocols/mammalian-cell-tissue-culture-techniques-protocol"
+  },
+  "disposalOfToxicWaste" : {
+     "protocolId":"disposalOfToxicWaste",
+    "link":"https://docs.google.com/document/d/1lraQ0aJKZy53z7WKaybbOJagNCIU-M8JET1KRY8EgP0/edit"
+  },
+  "creatingTheCorrectCellCultureEnvironment" : {
+     "protocolId":"creatingTheCorrectCellCultureEnvironment",
+    "link":"http://www.abcam.com/protocols/mammalian-cell-tissue-culture-techniques-protocol"
+  },
+  "checkingCells" : {
+     "protocolId":"checkingCells",
+    "link":"http://www.abcam.com/protocols/mammalian-cell-tissue-culture-techniques-protocol"
+  },
+  "subculturing" : {
+     "protocolId":"subculturing",
+    "link":"http://www.abcam.com/protocols/mammalian-cell-tissue-culture-techniques-protocol"
+  },
+  "splitting" : {
+     "protocolId":"splitting",
+    "link":"http://www.abcam.com/protocols/mammalian-cell-tissue-culture-techniques-protocol"
+  },
+  "subculturingLooselyAttachedCellLines" : {
+     "protocolId":"subculturingLooselyAttachedCellLines",
+    "link":"http://www.abcam.com/protocols/mammalian-cell-tissue-culture-techniques-protocol#7"
+  },
+  "subculturingAttachedCellLinesRequiringTrypsin" : {
+     "protocolId":"subculturingAttachedCellLinesRequiringTrypsin",
+    "link":"http://www.abcam.com/protocols/mammalian-cell-tissue-culture-techniques-protocol#8"
+  },
+  "subculturingOfSuspensionCellLines" : {
+     "protocolId":"subculturingOfSuspensionCellLines",
+    "link":"http://www.abcam.com/protocols/mammalian-cell-tissue-culture-techniques-protocol#9"
+  },
+  "changingMedia" : {
+     "protocolId":"changingMedia",
+    "link":"http://www.abcam.com/protocols/mammalian-cell-tissue-culture-techniques-protocol#10"
+  },
+  "passageNumber" : {
+     "protocolId":"passageNumber",
+    "link":"http://www.abcam.com/protocols/mammalian-cell-tissue-culture-techniques-protocol#11"
+  },
+  "suspensionCultures" : {
+     "protocolId":"suspensionCultures",
+    "link":"https://www.thermofisher.com/us/en/home/references/gibco-cell-culture-basics/cell-culture-protocols/cryopreservation-of-mammalian-cells.html"
+  },
+  "adherentCultures" : {
+     "protocolId":"adherentCultures",
+    "link":"https://www.thermofisher.com/us/en/home/references/gibco-cell-culture-basics/cell-culture-protocols/cryopreservation-of-mammalian-cells.html"
+  },
+  "makeLBAgar" : {
+     "protocolId":"makeLBAgar",
+    "link":"https://www.addgene.org/plasmid-protocols/bacterial-plates/"
+  },
+  "safetyCabinetPreparation" : {
+     "protocolId":"safetyCabinetPreparation",
+    "link":"http://bitesizebio.com/13678/quick-protocol-how-to-work-safely-and-effectively-with-a-biological-safety-cabinet-culture-hood/"
+  },
+  "safetyCabinetPreparationEnd" : {
+     "protocolId":"safetyCabinetPreparationEnd",
+    "link":"http://bitesizebio.com/13678/quick-protocol-how-to-work-safely-and-effectively-with-a-biological-safety-cabinet-culture-hood/"
+  },
+  "safetyCabinetPreparationWork" : {
+     "protocolId":"safetyCabinetPreparationWork",
+    "link":"http://bitesizebio.com/13678/quick-protocol-how-to-work-safely-and-effectively-with-a-biological-safety-cabinet-culture-hood/"
   }
 }

@@ -18,7 +18,8 @@
     "compile-dev": "tsc || true",
     "server": "node build/app.js",
     "server-dev": "nodemon --inspect build/app.js --watch build",
-    "query-repl": "npm run compile && node scripts/query-repl.js"
+    "query-repl": "npm run compile && node scripts/query-repl.js",
+    "get-speech-context": "node scripts/get-speech-context.js"
   },
   "author": "",
   "license": "ISC",

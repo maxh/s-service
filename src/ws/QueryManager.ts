@@ -5,31 +5,12 @@ import settings from '../settings';
 
 import { IAnswer } from '../http/teachers/interface';
 
+import { SCOUT_WEB_HOOK_SOURCE } from '../http/routes/query-hook';
 
-const CONTEXT_PHRASES = [
-  'Where is',
-  'wikipedia',
-  'show me the lab protocol for',
-  'whats the lab protocol for cyropreservation',
-  'whats the lab protocol for',
-  'let me see the lab protocol for',
-  'lab protocol',
-  'What is my next meeting',
-  'When is my next meeting',
-  'What and when is your next meeting',
-  'What is the diameter of a human keratinocyte',
-  'keratinocyte',
-  'carcinoma',
-  'freezing media',
-  'antibiotics',
-  'recovering frozen cells',
-  'cryopreservation serum',
-  'cryopreservation with serum',
-  'cryopreservation without serum',
-  'cryopreservation serumfree',
-  'cryopreservation no serum',
-  'thawing serum',
-];
+
+// tslint:disable:next-line no-var-requires
+const SPEECH_CONTEXT = require(process.cwd() + '/data/speechContext.json').context;
+
 
 export interface IQueryLocation {
   latitude: string;
@@ -102,14 +83,22 @@ class QueryManager {
     // Limits: chars per request < 10000, phrases < 500, chars per phrase < 100
     // TODO: call API.ai entities and intents endpoints
     if (!this.speechContextPromise) {
-      this.speechContextPromise = Promise.resolve(CONTEXT_PHRASES);
+      const limitedContext = SPEECH_CONTEXT.slice(0, 500);
+      this.speechContextPromise = Promise.resolve(limitedContext);
     }
     return this.speechContextPromise;
   }
 
   public getAnswer(transcript): Promise<IAnswer> {
     return (this.sendQuery(transcript).then(response => {
-      return JSON.parse(response.result.fulfillment.speech);
+      if (response.result.fulfillment.source === SCOUT_WEB_HOOK_SOURCE) {
+        return JSON.parse(response.result.fulfillment.speech);
+      } else {
+        return {
+          speech: response.result.fulfillment.speech,
+          display: response.result.fulfillment.speech
+        };
+      }
     }).catch(error => {
       console.error('Error processing answer: ');
       console.error(error);

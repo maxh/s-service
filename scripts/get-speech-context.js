@@ -1,6 +1,7 @@
 // Retrieves the speech context for an API.ai agent.
 
 var fetch = require('isomorphic-fetch');
+var fs = require('fs');
 var keys = require('../keys/keys.json');
 var throttle = require('lodash.throttle');
 var mongoose = require('mongoose');
@@ -177,7 +178,13 @@ function run() {
         .then(removeNonWords);
 
     phrasesPromise.then(function(phrases) {
-      console.log(phrases);
+      const filename = './data/generatedSpeechContext.json';
+      fs.writeFile(filename, JSON.stringify({ context: phrases }), function(err) {
+        if (err) {
+          return console.error(err);
+        }
+        console.log('Speech context written to: ' + filename);
+      });
     });
   });
 
