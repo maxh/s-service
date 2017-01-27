@@ -5,6 +5,11 @@ import settings from '../settings';
 import DeviceToken from '../models/DeviceToken';
 
 
+///////
+// JWT.
+///////
+
+
 const JWT_EXPIRES_IN_SECONDS = 60 * 60 * 5;
 
 export const getUserIdFromJwtPromise = (token) => {
@@ -26,6 +31,11 @@ export const generateJwt = (userId) => {
     expiresIn: JWT_EXPIRES_IN_SECONDS
   });
 };
+
+
+//////////////////
+// Header parsing.
+//////////////////
 
 
 export interface ITokenHeader {

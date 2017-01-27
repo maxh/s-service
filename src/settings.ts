@@ -2,6 +2,7 @@ import * as fs from 'fs';
 
 
 export interface ISettings {
+  isDev: boolean;
   projectId: string;
   port: number;
   httpServerUrl: string;
@@ -31,6 +32,7 @@ settings.auth = {};
 settings.projectId = 'scout-loftboxlabs';
 
 const setProd = () => {
+  settings.isDev = false;
   settings.port = process.env.PORT;
   settings.httpServerUrl = 'https://' + process.env.HOSTNAME;
   settings.wsServerUrl = 'wss://' + process.env.HOSTNAME;
@@ -41,6 +43,7 @@ const setProd = () => {
 };
 
 const setDev = () => {
+  settings.isDev = true;
   settings.port = 5000;
   settings.webServerUrl = 'http://localhost:' + settings.port;
   settings.socketServerUrl = 'wss://localhost:' + settings.port;

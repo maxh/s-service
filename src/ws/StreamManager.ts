@@ -135,6 +135,12 @@ class StreamManager {
   }
 
   private sendOnSocket(message: Object) {
+    if (settings.isDev) {
+      console.log('');
+      console.log('Sending on socket to client:');
+      console.log(message);
+      console.log('');
+    }
     this.socket.send(JSON.stringify(message));
   }
 
@@ -174,7 +180,8 @@ class StreamManager {
     this.queryManagerPromise
         .then(queryManager => queryManager.getAnswer(transcript))
         .then((answer) => {
-          this.sendOnSocket({ type: MessageType.SERVER_ANSWER, answer });
+          const message = Object.assign({}, { type: MessageType.SERVER_ANSWER }, answer);
+          this.sendOnSocket(message);
           this.state = State.AWAITING_SAMPLE_RATE;
         })
         .catch((error) => {

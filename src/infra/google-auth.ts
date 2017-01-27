@@ -67,21 +67,33 @@ export const getTokensFromCode = function(
 };
 
 
+export const getScoutGoogleAccessToken = (): Promise<string> => {
+  const SCOUT_GOOGLE_ID = '115152728321095987119';
+  return getAccessTokenForGoogleId(SCOUT_GOOGLE_ID);
+};
+
+export const getAccessTokenForGoogleId = (googleId: string): Promise<string> => {
+  return Permission.findByGoogleId(googleId).then(getAccessTokenFromPermission);
+};
+
 export const getAccessTokenForUserId = (userId: string): Promise<string> => {
-  return Permission.find(userId, Provider.GOOGLE).then((permission) => {
-    const { accessToken, accessTokenExpiration } = permission.providerInfo as IGoogleProviderInfo;
+  return Permission.find(userId, Provider.GOOGLE).then(getAccessTokenFromPermission);
+};
 
-    const BUFFER = 5 * 60;
-    const currentTimeInSecs = new Date().getTime() / 1000;
-    const isTokenValid = accessTokenExpiration - BUFFER > currentTimeInSecs;
 
-    if (isTokenValid) {
-      return accessToken;
-    }
+const getAccessTokenFromPermission = (permission) => {
+  const { accessToken, accessTokenExpiration } = permission.providerInfo as IGoogleProviderInfo;
 
-    return refreshAccessToken(permission).then(() => {
-      return permission.providerInfo.accessToken;
-    });
+  const BUFFER = 5 * 60;
+  const currentTimeInSecs = new Date().getTime() / 1000;
+  const isTokenValid = accessTokenExpiration - BUFFER > currentTimeInSecs;
+
+  if (isTokenValid) {
+    return accessToken;
+  }
+
+  return refreshAccessToken(permission).then(() => {
+    return permission.providerInfo.accessToken;
   });
 };
 

@@ -53,5 +53,10 @@
   {
     "protocolId" : "preparationOfCellGrowthMedium",
     "link" : "http://www.abcam.com/protocols/mammalian-cell-tissue-culture-techniques-protocol"
+  },
+  "example" :
+  {
+    "protocolId" : "example",
+    "link" : "https://docs.google.com/document/d/1lraQ0aJKZy53z7WKaybbOJagNCIU-M8JET1KRY8EgP0/edit"
   }
 }

@@ -10,8 +10,10 @@ wikipedia.teachers = [
     exec: function(params) {
       return new Promise(function(resolve, reject) {
         const url = 'https://en.wikipedia.org/wiki/' + params.title;
-        const htmlLink = `<a href="${url}">${url}</a>`;
-        resolve(htmlLink);
+        resolve({
+          link: url,
+          display: params.title
+        });
       });
     },
     params: {
