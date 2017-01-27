@@ -1,6 +1,9 @@
 import * as crypto from 'crypto';
-
 import * as apiai from 'apiai';
+
+import settings from '../settings';
+
+import { IAnswer } from '../http/teachers/interface';
 
 
 const CONTEXT_PHRASES = [
@@ -65,7 +68,11 @@ const sendApiAiQuery = function(
     agentAccessToken: string,
     query: string,
     options: IQueryOptions): Promise<IQueryResponse> {
-  console.log('sending api ai query: ', agentAccessToken, query, options);
+  if (settings.isDev) {
+    console.log('Sending API.ai query: ');
+    console.log(agentAccessToken, query, options);
+    console.log('');
+  }
   const agent = apiai(agentAccessToken);
   return new Promise((resolve, reject) => {
     const request = agent.textRequest(query, options);
@@ -100,9 +107,15 @@ class QueryManager {
     return this.speechContextPromise;
   }
 
-  public getAnswer(transcript): Promise<string> {
-    return (this.sendQuery(transcript)
-        .then(response => response.result.fulfillment.displayText));
+  public getAnswer(transcript): Promise<IAnswer> {
+    return (this.sendQuery(transcript).then(response => {
+      return JSON.parse(response.result.fulfillment.speech);
+    }).catch(error => {
+      console.error('Error processing answer: ');
+      console.error(error);
+      console.log('');
+      return { display: 'Error processing answer.' };
+    }));
   }
 
   private sendQuery(transcript) {
@@ -117,6 +130,11 @@ class QueryManager {
       options.contexts = this.contexts;
     }
     return sendApiAiQuery(this.agentAccessToken, transcript, options).then(response => {
+      if (settings.isDev) {
+        console.log('Got response from API.AI: ');
+        console.log(response);
+        console.log('');
+      }
       this.contexts = response.result.contexts;
       return response;
     });

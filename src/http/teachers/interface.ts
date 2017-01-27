@@ -1,10 +1,22 @@
 // TODO: stronger typing.
 
+export interface IHtmlRequest {
+  url: string;
+  options: any;
+}
+
+export interface IAnswer {
+  display?: string;
+  speech?: string;
+  link?: string;
+  htmlRequest?: IHtmlRequest;
+}
+
 export interface ITeacher {
   name: string;
   description: string;
   params: any;
-  exec(params: any): any;
+  exec(params: any): Promise<IAnswer>;
 }
 
 export interface IRequiredPermission {

@@ -157,6 +157,17 @@ class Permission {
     });
   };
 
+  public static findByGoogleId = function(googleId: string): Promise<Permission> {
+    const model = Permission.modelsByProvider[Provider.GOOGLE];
+    return model.findOne({ googleId }).then(doc => {
+      if (doc) {
+        return new Permission(doc);
+      } else {
+        return null;
+      }
+    });
+  };
+
   public static findAll = function(userId: string): Promise<Permission[]> {
     return baseModel.find({ userId }).then(docs => {
       if (docs.length) {

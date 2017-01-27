@@ -1,4 +1,9 @@
 {
+  "example" :
+  {
+    "protocolId" : "example",
+    "link" : "https://docs.google.com/document/d/1lraQ0aJKZy53z7WKaybbOJagNCIU-M8JET1KRY8EgP0/edit"
+  },
   "freezingMedia" : {
      "protocolId":"freezingMedia",
     "link":"http://thelabrat.com/protocols/freezingmedia.shtml"

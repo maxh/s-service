@@ -33,8 +33,8 @@ router.post('/', endpoint((req, res) => {
   return answerPromise
       .then(answer => {
         return {
-          speech: answer,
-          displayText: answer,
+          speech: JSON.stringify(answer),
+          displayText: 'foo',
           source: 'scout-web-hook'
         };
       })

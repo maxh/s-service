@@ -2,6 +2,7 @@ import * as fs from 'fs';
 
 
 export interface ISettings {
+  isDev: boolean;
   projectId: string;
   port: number;
   httpServerUrl: string;
@@ -20,8 +21,6 @@ export interface ISettings {
 const CREDS_ENV_VAR = process.env.GOOGLE_SERVICE_ACCOUNT_AUTH_JSON;
 const KEY_PATH = './keys/scout-service-account-credentials.json';
 const LOCAL_MONGO = 'mongodb://127.0.0.1:27017';
-const PROD_MONGO =
-    'mongodb://scoutdb-user:IsBx3ASt2Bsv@ds155718.mlab.com:55718';
 
 const readFile = (path) => JSON.parse(fs.readFileSync(path).toString());
 
@@ -33,16 +32,18 @@ settings.auth = {};
 settings.projectId = 'scout-loftboxlabs';
 
 const setProd = () => {
+  settings.isDev = false;
   settings.port = process.env.PORT;
   settings.httpServerUrl = 'https://' + process.env.HOSTNAME;
   settings.wsServerUrl = 'wss://' + process.env.HOSTNAME;
   settings.mongo.dbName = 'scout-db-prod';
-  settings.mongo.url = PROD_MONGO + '/' + settings.mongoDbName;
+  settings.mongo.url = process.env.PROD_MONGO_URL;
   settings.auth.keys = JSON.parse(process.env.AUTH_KEYS);
   settings.auth.serviceAccountCredentials = JSON.parse(CREDS_ENV_VAR);
 };
 
 const setDev = () => {
+  settings.isDev = true;
   settings.port = 5000;
   settings.webServerUrl = 'http://localhost:' + settings.port;
   settings.socketServerUrl = 'wss://localhost:' + settings.port;

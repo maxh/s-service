@@ -14,7 +14,7 @@ var replServer = repl.start({
   prompt: 'query-repl > ',
 });
 
-replServer.context.sendQuery = function(transcript) {
+replServer.context.getAnswer = function(transcript) {
   var log = console.log.bind(console);
-  qm.sendQuery(transcript).then(log).catch(log);
+  qm.getAnswer(transcript).then(log).catch(log);
 };
