@@ -39,16 +39,15 @@ class DeviceToken {
   public static createOrReplace(
       userId: string,
       deviceName: string): Promise<DeviceToken> {
-    const deleteExistingPromise = model.findOne({ userId, deviceName })
-      .then(existingDoc => {
-        if (existingDoc) {
-          return existingDoc.remove();
-        }
-      });
-
+    const findExistingPromise = model.findOne({ userId, deviceName });
     const tokenPromise = generateToken(BYTE_COUNT);
 
-    return Promise.all([tokenPromise, deleteExistingPromise]).then(values => {
+    return Promise.all([tokenPromise, findExistingPromise]).then(values => {
+      const existing = values[1];
+      if (existing) {
+        return existing;
+      }
+
       const token = values[0];
       return model.create({
         userId,
