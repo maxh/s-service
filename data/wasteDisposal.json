@@ -1,0 +1,68 @@
+{
+  "Sheet1" : {
+    "falcon-tube-for-urine" : {
+      "waste" : "falcon-tube-for-urine",
+      "disposal" : "Garbage"
+    },
+    "falcon-tube-for-media" : {
+      "waste" : "falcon-tube-for-media",
+      "disposal" : "Biohazardous waste container"
+    },
+    "pipette-tips" : {
+      "waste" : "pipette-tips",
+      "disposal" : "Biohazardous waste container"
+    },
+    "microcentrifuge-tubes" : {
+      "waste" : "microcentrifuge-tubes",
+      "disposal" : "Biohazardous waste container"
+    },
+    "liquid-waste" : {
+      "waste" : "liquid-waste",
+      "disposal" : "Pour bleach into flask/container with the liquid, allow to sit for 5-10 minutes, pour down drain, rinse flask/container with lots of water, and flush drain with lots of water"
+    },
+    "flammable-liquid-waste" : {
+      "waste" : "flammable-liquid-waste",
+      "disposal" : "Add to waste container in fume hood for proper disposal (disposal done on campus). Make sure container is labelled with appropriate concentrations of each waste component."
+    },
+    "used-serological-pipette" : {
+      "waste" : "used-serological-pipette",
+      "disposal" : "Biohazardous waste container"
+    },
+    "used-cell-culture-flasks" : {
+      "waste" : "used-cell-culture-flasks",
+      "disposal" : "Biohazardous waste container"
+    },
+    "urine" : {
+      "waste" : "urine",
+      "disposal" : "Pour down drain, flush drain with lots of water, pour bleach into flask/container, allow to sit for 5 -10 minutes, pour bleach down drain, rinse flask with lots of water, and flush drain with lots of water"
+    },
+    "used-gloves" : {
+      "waste" : "used-gloves",
+      "disposal" : "Spray with ethanol and throw in garbage"
+    },
+    "emptied-media-bottles" : {
+      "waste" : "emptied-media-bottles",
+      "disposal" : "Biohazardous waste container"
+    },
+    "used-cryovials" : {
+      "waste" : "used-cryovials",
+      "disposal" : "Biohazardous waste container"
+    },
+    "used-slides" : {
+      "waste" : "used-slides",
+      "disposal" : "Thoroughly wash with water - can be reused"
+    },
+    "used-coverslips" : {
+      "waste" : "used-coverslips",
+      "disposal" : "Glass waste bin"
+    },
+    "used-slides-with-pi/fda" : {
+      "waste" : "used-slides-with-pi/fda",
+      "disposal" : "Ziplock waste bag"
+    },
+    "used-pasteur-pipettes" : {
+      "waste" : "used-pasteur-pipettes",
+      "disposal" : "Glass waste container"
+    }
+  }
+}
