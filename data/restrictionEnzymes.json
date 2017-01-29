@@ -1,0 +1,370 @@
+{
+  "Acc65I" : {
+    "AatII" : "Acc65I",
+    "GACGT C" : "G GTACC"
+  },
+  "AccI" : {
+    "AatII" : "AccI",
+    "GACGT C" : "GT MKAC"
+  },
+  "AclI" : {
+    "AatII" : "AclI",
+    "GACGT C" : "AA CGTT"
+  },
+  "AatII " : {
+    "AatII" : "AatII ",
+    "GACGT C" : "GACGT C"
+  },
+  "Acc65I" : {
+    "AatII" : "Acc65I",
+    "GACGT C" : "G GTACC"
+  },
+  "AccI" : {
+    "AatII" : "AccI",
+    "GACGT C" : "GT MKAC"
+  },
+  "AclI" : {
+    "AatII" : "AclI",
+    "GACGT C" : "AA CGTT"
+  },
+  "AfeI" : {
+    "AatII" : "AfeI",
+    "GACGT C" : "AGC GCT"
+  },
+  "AflII " : {
+    "AatII" : "AflII ",
+    "GACGT C" : "C TTAAG"
+  },
+  "AgeI " : {
+    "AatII" : "AgeI ",
+    "GACGT C" : "A CCGGT"
+  },
+  "ApaI " : {
+    "AatII" : "ApaI ",
+    "GACGT C" : "GGGCC C"
+  },
+  "ApaLI " : {
+    "AatII" : "ApaLI ",
+    "GACGT C" : "G TGCAC"
+  },
+  "ApoI" : {
+    "AatII" : "ApoI",
+    "GACGT C" : "R AATTY"
+  },
+  "AscI" : {
+    "AatII" : "AscI",
+    "GACGT C" : "GG CGCGCC"
+  },
+  "AseI " : {
+    "AatII" : "AseI ",
+    "GACGT C" : "AT TAAT"
+  },
+  "AsiSI" : {
+    "AatII" : "AsiSI",
+    "GACGT C" : "GCGAT CGC"
+  },
+  "AvrII" : {
+    "AatII" : "AvrII",
+    "GACGT C" : "C CTAGG"
+  },
+  "BamHI " : {
+    "AatII" : "BamHI ",
+    "GACGT C" : "G GATCC"
+  },
+  "BclI " : {
+    "AatII" : "BclI ",
+    "GACGT C" : "T GATCA"
+  },
+  "BglII " : {
+    "AatII" : "BglII ",
+    "GACGT C" : "A GATCT"
+  },
+  "Bme1580I" : {
+    "AatII" : "Bme1580I",
+    "GACGT C" : "GKGCM C"
+  },
+  "BmtI" : {
+    "AatII" : "BmtI",
+    "GACGT C" : "GCTAG C"
+  },
+  "BsaHI" : {
+    "AatII" : "BsaHI",
+    "GACGT C" : "GR CGYC"
+  },
+  "BsiEI" : {
+    "AatII" : "BsiEI",
+    "GACGT C" : "CGRY CG"
+  },
+  "BsiWI" : {
+    "AatII" : "BsiWI",
+    "GACGT C" : "C GTACG"
+  },
+  "BspEI" : {
+    "AatII" : "BspEI",
+    "GACGT C" : "T CCGGA"
+  },
+  "BspHI" : {
+    "AatII" : "BspHI",
+    "GACGT C" : "T CATGA"
+  },
+  "BsrGI" : {
+    "AatII" : "BsrGI",
+    "GACGT C" : "T GTACA"
+  },
+  "BssHII" : {
+    "AatII" : "BssHII",
+    "GACGT C" : "G CGCGC"
+  },
+  "BstBI " : {
+    "AatII" : "BstBI ",
+    "GACGT C" : "TT CGAA"
+  },
+  "BstZ17I" : {
+    "AatII" : "BstZ17I",
+    "GACGT C" : "GTA TAC"
+  },
+  "BtgI" : {
+    "AatII" : "BtgI",
+    "GACGT C" : "C CRYGG"
+  },
+  "ClaI " : {
+    "AatII" : "ClaI ",
+    "GACGT C" : "AT CGAT"
+  },
+  "DraI " : {
+    "AatII" : "DraI ",
+    "GACGT C" : "TTT AAA"
+  },
+  "EaeI" : {
+    "AatII" : "EaeI",
+    "GACGT C" : "Y GGCCR"
+  },
+  "EagI " : {
+    "AatII" : "EagI ",
+    "GACGT C" : "C GGCCG"
+  },
+  "EcoRI " : {
+    "AatII" : "EcoRI ",
+    "GACGT C" : "G AATTC"
+  },
+  "EcoRV " : {
+    "AatII" : "EcoRV ",
+    "GACGT C" : "GAT ATC"
+  },
+  "FseI" : {
+    "AatII" : "FseI",
+    "GACGT C" : "GGCCGG CC"
+  },
+  "FspI " : {
+    "AatII" : "FspI ",
+    "GACGT C" : "TGC GCA"
+  },
+  "HaeII" : {
+    "AatII" : "HaeII",
+    "GACGT C" : "RGCGC Y"
+  },
+  "HincII" : {
+    "AatII" : "HincII",
+    "GACGT C" : "GTY RAC"
+  },
+  "HindIII " : {
+    "AatII" : "HindIII ",
+    "GACGT C" : "A AGCTT"
+  },
+  "HpaI " : {
+    "AatII" : "HpaI ",
+    "GACGT C" : "GTT AAC"
+  },
+  "KasI" : {
+    "AatII" : "KasI",
+    "GACGT C" : "G GCGCC"
+  },
+  "KpnI " : {
+    "AatII" : "KpnI ",
+    "GACGT C" : "GGTAC C"
+  },
+  "MfeI" : {
+    "AatII" : "MfeI",
+    "GACGT C" : "C AATTG"
+  },
+  "MluI" : {
+    "AatII" : "MluI",
+    "GACGT C" : "A CGCGT"
+  },
+  "MscI " : {
+    "AatII" : "MscI ",
+    "GACGT C" : "TGG CCA"
+  },
+  "MspA1I" : {
+    "AatII" : "MspA1I",
+    "GACGT C" : "CMG CKG"
+  },
+  "MfeI" : {
+    "AatII" : "MfeI",
+    "GACGT C" : "C AATTG"
+  },
+  "MluI" : {
+    "AatII" : "MluI",
+    "GACGT C" : "A CGCGT"
+  },
+  "MscI " : {
+    "AatII" : "MscI ",
+    "GACGT C" : "TGG CCA"
+  },
+  "MspA1I" : {
+    "AatII" : "MspA1I",
+    "GACGT C" : "CMG CKG"
+  },
+  "NaeI" : {
+    "AatII" : "NaeI",
+    "GACGT C" : "GCC GGC"
+  },
+  "NarI " : {
+    "AatII" : "NarI ",
+    "GACGT C" : "GG CGCC"
+  },
+  "NcoI " : {
+    "AatII" : "NcoI ",
+    "GACGT C" : "C CATGG"
+  },
+  "NdeI " : {
+    "AatII" : "NdeI ",
+    "GACGT C" : "CA TATG"
+  },
+  "NgoMIV" : {
+    "AatII" : "NgoMIV",
+    "GACGT C" : "G CCGGC"
+  },
+  "NheI " : {
+    "AatII" : "NheI ",
+    "GACGT C" : "G CTAGC"
+  },
+  "NotI " : {
+    "AatII" : "NotI ",
+    "GACGT C" : "GC GGCCGC"
+  },
+  "NruI " : {
+    "AatII" : "NruI ",
+    "GACGT C" : "TCG CGA"
+  },
+  "NsiI" : {
+    "AatII" : "NsiI",
+    "GACGT C" : "ATGCA T"
+  },
+  "NspI" : {
+    "AatII" : "NspI",
+    "GACGT C" : "RCATG Y"
+  },
+  "PacI" : {
+    "AatII" : "PacI",
+    "GACGT C" : "TTAAT TAA"
+  },
+  "PciI" : {
+    "AatII" : "PciI",
+    "GACGT C" : "A CATGT"
+  },
+  "PmeI" : {
+    "AatII" : "PmeI",
+    "GACGT C" : "GTTT AAAC"
+  },
+  "PmlI " : {
+    "AatII" : "PmlI ",
+    "GACGT C" : "CAC GTG"
+  },
+  "PsiI" : {
+    "AatII" : "PsiI",
+    "GACGT C" : "TTA TAA"
+  },
+  "PspOMI" : {
+    "AatII" : "PspOMI",
+    "GACGT C" : "G GGCCC"
+  },
+  "PstI " : {
+    "AatII" : "PstI ",
+    "GACGT C" : "CTGCA G"
+  },
+  "PvuI" : {
+    "AatII" : "PvuI",
+    "GACGT C" : "CGAT CG"
+  },
+  "PvuII " : {
+    "AatII" : "PvuII ",
+    "GACGT C" : "CAG CTG"
+  },
+  "SacI " : {
+    "AatII" : "SacI ",
+    "GACGT C" : "GAGCT C"
+  },
+  "SacII " : {
+    "AatII" : "SacII ",
+    "GACGT C" : "CCGC GG"
+  },
+  "SalI " : {
+    "AatII" : "SalI ",
+    "GACGT C" : "G TCGAC"
+  },
+  "SbfI" : {
+    "AatII" : "SbfI",
+    "GACGT C" : "CCTGCA GG"
+  },
+  "ScaI" : {
+    "AatII" : "ScaI",
+    "GACGT C" : "AGT ACT"
+  },
+  "SfcI" : {
+    "AatII" : "SfcI",
+    "GACGT C" : "C TRYAG"
+  },
+  "SfoI" : {
+    "AatII" : "SfoI",
+    "GACGT C" : "GGC GCC"
+  },
+  "SgrAI" : {
+    "AatII" : "SgrAI",
+    "GACGT C" : "CR CCGGYG"
+  },
+  "SmaI " : {
+    "AatII" : "SmaI ",
+    "GACGT C" : "CCC GGG"
+  },
+  "SmlI" : {
+    "AatII" : "SmlI",
+    "GACGT C" : "C TYRAG"
+  },
+  "SnaBI" : {
+    "AatII" : "SnaBI",
+    "GACGT C" : "TAC GTA"
+  },
+  "SpeI " : {
+    "AatII" : "SpeI ",
+    "GACGT C" : "A CTAGT"
+  },
+  "SphI" : {
+    "AatII" : "SphI",
+    "GACGT C" : "GCATG C"
+  },
+  "SspI" : {
+    "AatII" : "SspI",
+    "GACGT C" : "AAT ATT"
+  },
+  "StuI " : {
+    "AatII" : "StuI ",
+    "GACGT C" : "AGG CCT"
+  },
+  "SwaI" : {
+    "AatII" : "SwaI",
+    "GACGT C" : "ATTT AAAT"
+  },
+  "XbaI " : {
+    "AatII" : "XbaI ",
+    "GACGT C" : "T CTAGA"
+  },
+  "XhoI " : {
+    "AatII" : "XhoI ",
+    "GACGT C" : "C TCGAG"
+  },
+  "XmaI" : {
+    "AatII" : "XmaI",
+    "GACGT C" : "C CCGGG"
+  }
+}
