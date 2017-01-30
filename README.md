@@ -49,7 +49,7 @@ npm run query-repl
 Then in the repl:
 
 ```
-sendQuery('where is erik')
+getAnswer('what is the lab protocol for recovering frozen cells')
 ```
 
 ## Implementation notes
