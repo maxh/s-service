@@ -1,3 +1,5 @@
+import 'newrelic';
+
 import * as mongoose from 'mongoose';
 
 import WebServer from './http/Server';
