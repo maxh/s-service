@@ -1,14 +1,18 @@
 import * as express from 'express';
+import * as basicauth from 'basicauth-middleware';
 
 import { endpoint } from '../../infra/net';
-
 import { teachersByName } from '../teachers/index';
+import settings from '../../settings';
 
 
 export const SCOUT_WEB_HOOK_SOURCE = 'scout-web-hook';
 
 const router = express.Router();
 
+router.use('/',
+    basicauth(settings.auth.keys.webhookBasicAuthUsername,
+              settings.auth.keys.webhookBasicAuthPassword));
 router.post('/', endpoint((req, res) => {
   const answerPromise = new Promise((resolve, reject) => {
     try {
