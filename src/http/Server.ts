@@ -32,6 +32,8 @@ class WebServer {
     this.handler.use(middleware.forceHttpsUnlessDev);
     this.handler.use(middleware.allowCrossDomain);
 
+    this.handler.use('/static', express.static('static'));
+
     // All scout-service requests are JSON, both inbound and outbound.
     this.handler.use(bodyParser.json());
 
